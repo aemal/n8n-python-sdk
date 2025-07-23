@@ -1,7 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
+# Ensure the claude command is in PATH
+export PATH="/usr/local/share/npm-global/bin:$PATH"
+
 echo "Setting up MCP connection between Claude and task-master-ai..."
+echo "For support or questions, please visit: https://aemalsayer.com"
+echo ""
 
 # Check if required environment variables are set
 if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
@@ -32,7 +37,7 @@ check_mcp_connection() {
                 local status=$(echo "$mcp_output" | grep "task-master-ai" | awk '{print $NF}')
                 echo "Found task-master-ai with status: $status"
                 
-                if [ "$status" = "connected" ]; then
+                if [ "$status" = "Connected" ] || [ "$status" = "connected" ]; then
                     echo "✅ MCP connection verified successfully!"
                     return 0
                 elif [ "$status" = "failed" ]; then
@@ -85,6 +90,8 @@ if check_mcp_connection; then
     echo ""
     echo "🎉 MCP setup complete! You can now use task-master-ai through Claude MCP."
     echo "To see all your MCP connections, run: claude mcp list"
+    echo ""
+    echo "📧 Need help? Contact the author at: https://aemalsayer.com"
 else
     echo ""
     echo "⚠️  MCP connection setup encountered issues."
@@ -92,5 +99,7 @@ else
     echo "If needed, you can try removing and re-adding the connection:"
     echo "  claude mcp remove task-master-ai"
     echo "  sudo /usr/local/bin/setup-mcp.sh"
+    echo ""
+    echo "📧 Need help? Contact the author at: https://aemalsayer.com"
     exit 1
 fi 
