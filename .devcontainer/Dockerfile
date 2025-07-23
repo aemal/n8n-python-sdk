@@ -69,10 +69,12 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
 # Install Claude
 RUN npm install -g @anthropic-ai/claude-code task-master-ai
 
-# Copy and set up firewall script
-COPY init-firewall.sh /usr/local/bin/
+# Copy and set up scripts
+COPY init-firewall.sh setup-mcp.sh init-environment.sh /usr/local/bin/
 USER root
-RUN chmod +x /usr/local/bin/init-firewall.sh && \
+RUN chmod +x /usr/local/bin/init-firewall.sh /usr/local/bin/setup-mcp.sh /usr/local/bin/init-environment.sh && \
   echo "node ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/node-firewall && \
+  echo "node ALL=(root) NOPASSWD: /usr/local/bin/init-environment.sh" >> /etc/sudoers.d/node-firewall && \
+  echo "node ALL=(root) NOPASSWD: /usr/local/bin/setup-mcp.sh" >> /etc/sudoers.d/node-firewall && \
   chmod 0440 /etc/sudoers.d/node-firewall
 USER node
