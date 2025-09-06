@@ -1,0 +1,294 @@
+The SDK aims to:
+
+* Remove the friction of manually building workflows in the n8n UI.
+* The friction is going from Python workflows, custom Python functions to n8n nodes that work.
+* Enable **programmatic generation** of workflows with Python.
+* Let developers **customize nodes** (e.g., execution environment, Python scripts, data parsing).
+* Manage n8n automation from python code, aka. pipeline as a code.
+* Provide an intuitive API while maintaining compatibility with n8n's workflow specification.
+
+This is especially valuable for developers who want to **bridge Python and n8n**, making automation accessible without switching contexts between coding and GUI-based workflow builders.
+
+IMPORTANT NOTE:  Your current focus is to build only an MVP that works on the following n8n nodes. Click trigger node, HTTP request node, Google Sheet node and you have access to those files from /n8n-workflows folder, each having their file name with a json file format.
+
+# Core Features
+
+### **1. Workflow Definition in Python**
+
+* **What it does:** Lets developers define entire n8n workflows using Python classes and functions.
+* **Why it's important:** Eliminates the need to manually configure workflows in the n8n GUI.
+* **How it works:** Developers define workflows using a fluent API. When executed, the SDK generates a valid `workflow.json` file compatible with n8n.
+
+```python
+from n8n_sdk import Workflow, Node
+
+# Build the exact workflow: Manual Trigger -> HTTP Request -> Google Sheets appendOrUpdate
+workflow = Workflow(name="Users to Google Sheet")
+
+trigger = Node(
+    id="3effa98f-f88c-4c8d-a2f2-3dbf15ea77bd",
+    name="When clicking ‘Execute workflow’",
+    type="n8n-nodes-base.manualTrigger",
+    typeVersion=1,
+    position=[-288, -16],
+    params={},
+)
+
+http = Node(
+    id="087c2d01-6a20-47c6-9599-6a0136c99183",
+    name="HTTP Request",
+    type="n8n-nodes-base.httpRequest",
+    typeVersion=4.2,
+    position=[-32, -16],
+    params={
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "options": {}
+    },
+)
+
+sheets = Node(
+    id="66bf1544-26d7-4f0d-9130-a7714ae1beed",
+    name="Append or update row in sheet",
+    type="n8n-nodes-base.googleSheets",
+    typeVersion=4.7,
+    position=[240, -16],
+    params={
+        "operation": "appendOrUpdate",
+        "documentId": {
+            "__rl": True,
+            "value": "193K6ZufOQgQcV-7P4D6jyS8ejNfxIv32yvT2bR5lT2k",
+            "mode": "list",
+            "cachedResultName": "Users",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/193K6ZufOQgQcV-7P4D6jyS8ejNfxIv32yvT2bR5lT2k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+            "__rl": True,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/193K6ZufOQgQcV-7P4D6jyS8ejNfxIv32yvT2bR5lT2k/edit#gid=0"
+        },
+        "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+                "name": "={{ $json.name }}",
+                "username": "={{ $json.username }}",
+                "email": "={{ $json.email }}",
+                "phone": "={{ $json.phone }}",
+                "website": "={{ $json.website }}"
+            },
+            "matchingColumns": [
+                "email"
+            ],
+            "schema": [
+                {"id": "name", "displayName": "name", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True},
+                {"id": "username", "displayName": "username", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True},
+                {"id": "email", "displayName": "email", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True, "removed": False},
+                {"id": "phone", "displayName": "phone", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True},
+                {"id": "website", "displayName": "website", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True}
+            ],
+            "attemptToConvertTypes": False,
+            "convertFieldsToString": False
+        },
+        "options": {}
+    },
+    credentials={
+        "googleSheetsOAuth2Api": {
+            "id": "Heyjvh3DnLP9bR1B",
+            "name": "Google Sheets account 3"
+        }
+    }
+)
+
+workflow.add_nodes(trigger, http, sheets)
+workflow.connect(trigger, http)
+workflow.connect(http, sheets)
+
+# Export to a file that n8n can import
+workflow.export("workflow.json")
+```
+
+### **2. Node Abstraction Layer**
+
+* **What it does:** Provides Python classes to define n8n nodes, including built-in and custom Python-function nodes.
+* **Why it's important:** Makes it easier to create, configure, and connect nodes without manually learning the JSON schema.
+* **How it works:** Each node maps directly to n8n's node JSON specification. Developers specify attributes in Python, and the SDK handles transpilation.
+
+### **3. JSON Workflow Export**
+
+* **What it does:** Transpiles Python-defined workflows into a fully compliant n8n `workflow.json` file.
+* **Why it's important:** Automates workflow creation while ensuring compatibility with n8n.
+* **How it works:** When the Python script runs, it outputs `workflow.json` to disk.
+
+###
+
+# User Experience
+
+### **User Personas**
+
+* **Data Scientists**: Want to run custom Python scripts within n8n workflows without touching the UI.
+* **Automation Engineers**: Need programmatic control to define workflows dynamically.
+* **ML Engineers**: Use n8n for model deployment pipelines but prefer coding over GUI-based workflow setup.
+
+### **Key User Flows**
+
+1. **Clone the repo** and open it locally (no PyPI install or packaging for MVP).
+2. Keep the SDK code in **`./sdk/sdk.py`** (or `./sdk/n8n_sdk.py`) and import it in your app code, e.g., `from sdk.sdk import Workflow, Node`.
+3. Author **`main.py`** in the repo root to define nodes, connect them, and call the exporter.
+4. Run `python main.py` to emit **`./n8n-workflows/workflow.json`** and (optionally) **`./n8n-workflows/sample.json`**.
+5. Import `workflow.json` into n8n.
+
+### **UI/UX Considerations**
+
+* Focus on **developer experience** rather than GUI.
+* Provide excellent **documentation** with examples.
+* Ship a **sample project** with a prebuilt `main.py` and `sample.json`.
+
+### **System Components**
+
+* **SDK Folder Code**: A single Python file in `./sdk/sdk.py` (or `./sdk/n8n_sdk.py`) containing classes for Workflow, Node, and connections.
+* **Transpiler Engine**: Logic inside that same file to convert Python objects into n8n-compatible JSON workflows.
+* **CLI** *(future, optional)*: Could be added later but **not part of MVP**.
+
+### **Data Models**
+
+#### Workflow Model
+
+```python
+Workflow:
+    - id: UUID
+    - name: str
+    - nodes: List[Node]
+    - connections: Dict
+```
+
+#### Node Model
+
+```python
+Node:
+    - id: UUID
+    - name: str
+    - type: str  # e.g., n8n-nodes-base.pythonFunction
+    - params: Dict
+    - position: Tuple[int, int]  # Optional, for UI layout
+```
+
+### **APIs & Integrations**
+
+* **No external API calls needed initially**.
+* Ensure generated JSON matches the n8n **workflow import/export API** format.
+
+### **Infrastructure Requirements**
+
+* Pure Python package (PyPI).
+* No server required for SDK usage.
+* Optional: Docker container for testing workflows in isolation.
+
+# Folder Structure
+
+At the root level, there will be an **n8n/** folder containing two key subfolders:
+
+* **n8n-nodes/** → Contains individual JSON files for each n8n node.
+
+  * Each file corresponds to a single node configuration.
+  * Filenames are exactly as required for each node.
+
+* **n8n-workflows/** → Contains sample workflow JSON files.
+
+  * These workflows reference the nodes from **n8n-nodes**\*\*`/`\*\*.
+  * Used to demonstrate how individual nodes are combined.
+
+This structure allows the engine generating JSON workflows to understand how to assemble nodes into complete workflows.
+
+# AI Config Flag
+
+**Goal:** Add an optional, root-level configuration switch that, when enabled, routes workflow generation through an LLM (ChatGPT “GPT‑5” by default) instead of a direct Python→JSON transpile. This allows the engine to infer node wiring, metadata, and parameters from `main.py` and from sample assets in `n8n/`.
+
+**Location:** `./ai.config.json` (or `.env` keys). When `AI_CONFIG_ENABLED=true`, the engine uses the LLM path.
+
+**Inputs to the LLM pipeline (read-only):**
+
+* `./main.py` — the Python script describing intent/logic.
+* `./sdk/sdk.py` — helpers and type definitions for Node/Workflow (context only).
+* `./n8n/n8n-nodes/*.json` — canonical examples of individual node JSON.
+* `./n8n/n8n-workflows/*.json` — canonical examples of full workflows combining those nodes.
+
+**Output:**
+
+* `./n8n-workflows/workflow.json` — a single, valid n8n workflow JSON returned by the LLM (function calling), not a 1:1 transpilation of in-memory dicts.
+
+**Provider & model configuration (environment variables):**
+
+* `AI_CONFIG_ENABLED=true|false`
+* `AI_PROVIDER=openai|anthropic|gemini` (default: `openai`)
+* `MODEL_NAME=gpt-5` (examples: `gpt-5`, `claude-3-5-sonnet`, `gemini-1.5-pro`)
+* `OPENAI_API_KEY=...`
+* `ANTHROPIC_API_KEY=...`
+* `GEMINI_API_KEY=...`
+* Optional tuning: `AI_TEMPERATURE=0.0`, `AI_MAX_TOKENS=200000`
+
+**LLM orchestration (inside ********************`sdk/sdk.py`********************):**
+
+1. **Collect context**
+
+   * Read `main.py` to extract:
+
+     * I/O intent (inputs/outputs), HTTP calls, data transforms, tabular columns, keys for upserts.
+   * Load sample node specs from `n8n/n8n-nodes/` and sample workflows from `n8n/n8n-workflows/`.
+   * Build a compact prompt with system + user messages, including constraints ("must be valid n8n workflow JSON").
+2. **Function calling schema**
+
+   * Define a JSON schema function (e.g., `return_workflow`) with fields:
+
+     * `nodes: Node[]` with `{ id, name, type, typeVersion, position, parameters, credentials? }`
+     * `connections: { [nodeName: string]: { main: Array<Array<{ node: string, type: "main", index: number }>> } }`
+     * `meta`, `pinData` (optional)
+   * Ask the model to **only** call `return_workflow` with a strictly valid object.
+3. **Provider adapter**
+
+   * Implement `llm_call(provider, model, messages, functions) -> dict` with adapters for OpenAI, Anthropic, Gemini. Keep the interface identical; hide SDK differences.
+4. **Validation & safeguards**
+
+   * Validate returned JSON against a local workflow schema. If invalid, attempt one automatic repair round by sending validator errors back to the model.
+   * If still invalid, **fallback** to the deterministic Python→JSON transpiler so `workflow.json` is still produced.
+5. **Determinism controls**
+
+   * Default `temperature=0.0`, set top‑p if supported, and seed if provider supports it. Log provider/model/version and prompt hash to `./logs/`.
+
+**Prompt design notes:**
+
+* Include examples from `n8n/n8n-workflows/` to ground the structure (few‑shot).
+* Include minimal node exemplars from `n8n/n8n-nodes/` to ground parameters.
+* Summarize `main.py` into a concise spec (what data is fetched, transformed, and written) to reduce token load.
+* Require matching **runtime behavior**: the produced nodes must compute the same result as `main.py` (e.g., HTTP URL, selected fields, unique key for upsert).
+
+**Success criteria (MVP scope):**
+
+* Supports the three focus nodes: **Manual Trigger**, **HTTP Request**, **Google Sheets** (append/update).
+* Produces a valid workflow that mirrors `main.py`’s logic and yields identical outputs when executed in n8n.
+* Switchable between providers via env without code changes.
+
+**Error handling & DX:**
+
+* If the LLM path fails, write `workflow.llm.error.json` with model response and validator errors, then fall back to transpiler and write `workflow.json`.
+* Provide a CLI shim `python main.py --ai` to force LLM mode, or `AI_CONFIG_ENABLED=true` via env.
+
+**Security & privacy:**
+
+* Never upload secrets from credentials; redact credential IDs/names in prompts. Only include types and parameter shapes in-context.
+* Allow `AI_STRICT_NO_CODE=true` to forbid sending raw code; send a summarized AST/IR instead.
+
+# Development Roadmap
+
+### **Phase 1: MVP**
+
+* Define Workflow and Node Python classes.
+* Implement JSON transpilation.
+* Export valid `workflow.json` file.
+* Include sample project with `main.py` and `sample.json`.
+
+###
+
+###
+
+#

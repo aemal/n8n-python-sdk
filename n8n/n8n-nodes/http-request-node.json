@@ -1,0 +1,30 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -32,
+        -16
+      ],
+      "id": "087c2d01-6a20-47c6-9599-6a0136c99183",
+      "name": "HTTP Request"
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "61d1ceb8b60d551b2bd6cb318774870200f11403fbfe4e124bc9e07f08b20486"
+  }
+}

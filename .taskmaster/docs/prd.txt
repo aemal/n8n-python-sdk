@@ -1,0 +1,210 @@
+The SDK aims to:
+
+* Remove the friction of manually building workflows in the n8n UI.
+* The friction is going from Python workflows, custom Python functions to n8n nodes that work.
+* Enable **programmatic generation** of workflows with Python.
+* Let developers **customize nodes** (e.g., execution environment, Python scripts, data parsing).
+* Manage n8n automation from python code, aka. pipeline as a code.
+* Provide an intuitive API while maintaining compatibility with n8n's workflow specification.
+
+This is especially valuable for developers who want to **bridge Python and n8n**, making automation accessible without switching contexts between coding and GUI-based workflow builders.
+
+IMPORTANT NOTE:  Your current focus is to build only an MVP that works on the following n8n nodes. Click trigger node, HTTP request node, Google Sheet node and you have access to those files from /n8n-workflows folder, each having their file name with a json file format.
+
+# Core Features
+
+### **1. Workflow Definition in Python**
+
+* **What it does:** Lets developers define entire n8n workflows using Python classes and functions.
+* **Why it's important:** Eliminates the need to manually configure workflows in the n8n GUI.
+* **How it works:** Developers define workflows using a fluent API. When executed, the SDK generates a valid `workflow.json` file compatible with n8n.
+
+```python
+from n8n_sdk import Workflow, Node
+
+# Build the exact workflow: Manual Trigger -> HTTP Request -> Google Sheets appendOrUpdate
+workflow = Workflow(name="Users to Google Sheet")
+
+trigger = Node(
+    id="3effa98f-f88c-4c8d-a2f2-3dbf15ea77bd",
+    name="When clicking ‘Execute workflow’",
+    type="n8n-nodes-base.manualTrigger",
+    typeVersion=1,
+    position=[-288, -16],
+    params={},
+)
+
+http = Node(
+    id="087c2d01-6a20-47c6-9599-6a0136c99183",
+    name="HTTP Request",
+    type="n8n-nodes-base.httpRequest",
+    typeVersion=4.2,
+    position=[-32, -16],
+    params={
+        "url": "https://jsonplaceholder.typicode.com/users",
+        "options": {}
+    },
+)
+
+sheets = Node(
+    id="66bf1544-26d7-4f0d-9130-a7714ae1beed",
+    name="Append or update row in sheet",
+    type="n8n-nodes-base.googleSheets",
+    typeVersion=4.7,
+    position=[240, -16],
+    params={
+        "operation": "appendOrUpdate",
+        "documentId": {
+            "__rl": True,
+            "value": "193K6ZufOQgQcV-7P4D6jyS8ejNfxIv32yvT2bR5lT2k",
+            "mode": "list",
+            "cachedResultName": "Users",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/193K6ZufOQgQcV-7P4D6jyS8ejNfxIv32yvT2bR5lT2k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+            "__rl": True,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/193K6ZufOQgQcV-7P4D6jyS8ejNfxIv32yvT2bR5lT2k/edit#gid=0"
+        },
+        "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+                "name": "={{ $json.name }}",
+                "username": "={{ $json.username }}",
+                "email": "={{ $json.email }}",
+                "phone": "={{ $json.phone }}",
+                "website": "={{ $json.website }}"
+            },
+            "matchingColumns": [
+                "email"
+            ],
+            "schema": [
+                {"id": "name", "displayName": "name", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True},
+                {"id": "username", "displayName": "username", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True},
+                {"id": "email", "displayName": "email", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True, "removed": False},
+                {"id": "phone", "displayName": "phone", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True},
+                {"id": "website", "displayName": "website", "required": False, "defaultMatch": False, "display": True, "type": "string", "canBeUsedToMatch": True}
+            ],
+            "attemptToConvertTypes": False,
+            "convertFieldsToString": False
+        },
+        "options": {}
+    },
+    credentials={
+        "googleSheetsOAuth2Api": {
+            "id": "Heyjvh3DnLP9bR1B",
+            "name": "Google Sheets account 3"
+        }
+    }
+)
+
+workflow.add_nodes(trigger, http, sheets)
+workflow.connect(trigger, http)
+workflow.connect(http, sheets)
+
+# Export to a file that n8n can import
+workflow.export("workflow.json")
+```
+
+### **2. Node Abstraction Layer**
+
+* **What it does:** Provides Python classes to define n8n nodes, including built-in and custom Python-function nodes.
+* **Why it's important:** Makes it easier to create, configure, and connect nodes without manually learning the JSON schema.
+* **How it works:** Each node maps directly to n8n's node JSON specification. Developers specify attributes in Python, and the SDK handles transpilation.
+
+### **3. JSON Workflow Export**
+
+* **What it does:** Transpiles Python-defined workflows into a fully compliant n8n `workflow.json` file.
+* **Why it's important:** Automates workflow creation while ensuring compatibility with n8n.
+* **How it works:** When the Python script runs, it outputs `workflow.json` to disk.
+
+###
+
+# User Experience
+
+### **User Personas**
+
+* **Data Scientists**: Want to run custom Python scripts within n8n workflows without touching the UI.
+* **Automation Engineers**: Need programmatic control to define workflows dynamically.
+* **ML Engineers**: Use n8n for model deployment pipelines but prefer coding over GUI-based workflow setup.
+
+### **Key User Flows**
+
+1. **Clone the repo** and open it locally (no PyPI install or packaging for MVP).
+2. Keep the SDK code in **`./sdk/sdk.py`** (or `./sdk/n8n_sdk.py`) and import it in your app code, e.g., `from sdk.sdk import Workflow, Node`.
+3. Author **`main.py`** in the repo root to define nodes, connect them, and call the exporter.
+4. Run `python main.py` to emit **`./n8n-workflows/workflow.json`** and (optionally) **`./n8n-workflows/sample.json`**.
+5. Import `workflow.json` into n8n.
+
+### **UI/UX Considerations**
+
+* Focus on **developer experience** rather than GUI.
+* Provide excellent **documentation** with examples.
+* Ship a **sample project** with a prebuilt `main.py` and `sample.json`.
+
+### **System Components**
+
+* **SDK Folder Code**: A single Python file in `./sdk/sdk.py` (or `./sdk/n8n_sdk.py`) containing classes for Workflow, Node, and connections.
+* **Transpiler Engine**: Logic inside that same file to convert Python objects into n8n-compatible JSON workflows.
+* **CLI** *(future, optional)*: Could be added later but **not part of MVP**.
+
+### **Data Models**
+
+#### Workflow Model
+
+```python
+Workflow:
+    - id: UUID
+    - name: str
+    - nodes: List[Node]
+    - connections: Dict
+```
+
+#### Node Model
+
+```python
+Node:
+    - id: UUID
+    - name: str
+    - type: str  # e.g., n8n-nodes-base.pythonFunction
+    - params: Dict
+    - position: Tuple[int, int]  # Optional, for UI layout
+```
+
+### **APIs & Integrations**
+
+* **No external API calls needed initially**.
+* Ensure generated JSON matches the n8n **workflow import/export API** format.
+
+### **Infrastructure Requirements**
+
+* Pure Python package (PyPI).
+* No server required for SDK usage.
+* Optional: Docker container for testing workflows in isolation.
+
+# Folder Structure
+
+At the root level, there will be an **n8n/** folder containing two key subfolders:
+
+* **n8n-nodes/** → Contains individual JSON files for each n8n node.
+
+  * Each file corresponds to a single node configuration.
+  * Filenames are exactly as required for each node.
+
+* **n8n-workflows/** → Contains sample workflow JSON files.
+
+  * These workflows reference the nodes from **n8n-nodes**\*\*`/`\*\*.
+  * Used to demonstrate how individual nodes are combined.
+
+This structure allows the engine generating JSON workflows to understand how to assemble nodes into complete workflows.
+
+# Development Roadmap
+
+### **Phase 1: MVP**
+
+* Define Workflow and Node Python classes.
+* Implement JSON transpilation.
+* Export valid `workflow.json` file.
+* Include sample project with `main.py` and `sample.json`.
