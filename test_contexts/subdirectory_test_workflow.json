@@ -1,0 +1,58 @@
+{
+  "id": "01874b78-1987-4242-85f1-0232550e3b1c",
+  "name": "Subdirectory Test",
+  "nodes": [
+    {
+      "id": "30174f07-6dec-4142-b632-5bbe2c2e0327",
+      "name": "Trigger from subdir",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "c5e5086d-5822-4a78-9def-4a64453d8897",
+      "name": "HTTP from subdir",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "url": "https://example.com",
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Trigger from subdir": {
+      "main": [
+        [
+          {
+            "node": "HTTP from subdir",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP from subdir": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {},
+  "tags": [],
+  "createdAt": "2025-09-06T13:23:23.481858",
+  "updatedAt": "2025-09-06T13:23:23.481919",
+  "pinData": {},
+  "meta": {
+    "instanceId": "01874b78-1987-4242-85f1-0232550e3b1c"
+  }
+}
