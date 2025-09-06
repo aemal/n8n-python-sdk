@@ -12,6 +12,10 @@ This dockerized development environment orchestrates three AI agents working in 
 
 Both Claude Code and Cursor can produce code simultaneously, while Task Master AI handles task management and coordination between the agents. This setup is specifically dockerized for safety, as Claude's YOLO mode (using `--dangerously-skip-permissions`) can be risky in unrestricted environments.
 
+![abc](images/00-vibebox.jpeg)
+
+> Note: Soon I will add Gemini CLI in VibeBox
+
 **Key Benefits:**
 
 - **Long-running execution** - Designed to run uninterrupted for extended periods
