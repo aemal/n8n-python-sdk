@@ -17,8 +17,6 @@ The n8n Python SDK provides a fluent API for building automation workflows that 
 - 🧪 **Extensive Testing** - Comprehensive test suites covering all functionality
 - 📖 **Rich Documentation** - Detailed guides and examples for all features
 
-![n8n Python SDK Workflow Creation](images/00-vibebox.jpeg)
-
 ## Quick Start
 
 ### Installation
