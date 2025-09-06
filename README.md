@@ -1,6 +1,6 @@
-# Claude Code Sandbox with Task Master AI MCP
+# VibeBox
 
-This project creates a powerful three-agent development environment that combines **Claude Code**, **Cursor**, and **Task Master AI** to work together on complex software development tasks.
+VibeBox is a powerful three-agent development environment that combines **Claude Code**, **Cursor**, and **Task Master AI** to work together on complex software development tasks.
 
 ## Overview
 
@@ -46,7 +46,7 @@ Follow these simple steps to get your development environment up and running:
 
 ```bash
 git clone https://github.com/aemal/claude-code-boilerplate
-cd claude-code-boilerplate
+cd vibebox
 ```
 
 ### Step 2: Prepare Your Environment
