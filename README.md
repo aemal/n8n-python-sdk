@@ -1,267 +1,425 @@
-# VibeBox
+# n8n Python SDK
 
-VibeBox is a powerful three-agent development environment that combines **Claude Code**, **Cursor**, and **Task Master AI** to work together on complex software development tasks.
+A comprehensive Python SDK for programmatically creating and managing n8n workflows. This SDK enables developers to define n8n workflows using Python code, eliminating the need to manually configure workflows in the n8n GUI.
 
 ## Overview
 
-This dockerized development environment orchestrates three AI agents working in harmony:
+The n8n Python SDK provides a fluent API for building automation workflows that can be exported as JSON files compatible with n8n. Whether you're creating simple API integrations or complex data processing pipelines, this SDK makes it easy to define, validate, and export workflows programmatically.
 
-- **Claude Code** - Provides advanced code generation and analysis capabilities
-- **Cursor IDE** - Offers intelligent code editing and development features
-- **Task Master AI** - Manages and coordinates tasks across the development workflow
+**Key Features:**
 
-Both Claude Code and Cursor can produce code simultaneously, while Task Master AI handles task management and coordination between the agents. This setup is specifically dockerized for safety, as Claude's YOLO mode (using `--dangerously-skip-permissions`) can be risky in unrestricted environments.
+- 🔧 **Programmatic Workflow Creation** - Define workflows using Python code instead of GUI
+- 🧩 **Multiple Node Types** - Support for Manual Triggers, HTTP Requests, Google Sheets, and more
+- ✅ **Built-in Validation** - Comprehensive workflow and node validation with detailed error messages
+- 📋 **Error Handling** - Custom exception hierarchy with specific error codes for debugging
+- 📊 **Logging System** - Configurable logging with multiple output options and levels
+- 🔄 **JSON Export/Import** - Full compatibility with n8n workflow JSON format
+- 🧪 **Extensive Testing** - Comprehensive test suites covering all functionality
+- 📖 **Rich Documentation** - Detailed guides and examples for all features
 
-![abc](images/00-vibebox.jpeg)
+![n8n Python SDK Workflow Creation](images/00-vibebox.jpeg)
 
-> Note: Soon I will add Gemini CLI in VibeBox
+## Quick Start
 
-**Key Benefits:**
+### Installation
 
-- **Long-running execution** - Designed to run uninterrupted for extended periods
-- **Feature completion** - Capable of finishing entire application features autonomously
-- **Safe isolation** - Docker containment prevents system-level risks from aggressive AI permissions
-- **Multi-agent coordination** - Three specialized agents working together for optimal results
-
-The project automatically sets up Model Context Protocol (MCP) connections between all agents when the container starts, creating a seamless collaborative development environment.
-
-## Prerequisites
-
-Before using this devcontainer, make sure you have:
-
-1. **Docker Desktop** installed and running on your system
-
-   - [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
-
-2. **Cursor IDE** with the Dev Containers extension
-
-   - Install the "Dev Containers" extension in Cursor
-   - You can find it in the extensions marketplace by searching for "Dev Containers"
-
-3. **API Keys** for the MCP connection:
-   - **Anthropic API Key** for Claude
-   - **Perplexity API Key** for enhanced functionality
-
-## Setup Instructions
-
-Follow these simple steps to get your development environment up and running:
-
-### Step 1: Clone the Project
+Clone this repository and include it in your project:
 
 ```bash
-git clone https://github.com/aemal/claude-code-boilerplate
-cd vibebox
+git clone https://github.com/yourusername/n8n-python-sdk.git
+cd n8n-python-sdk
 ```
 
-### Step 2: Prepare Your Environment
+### Basic Usage
 
-1. **Run Docker Desktop** - Make sure Docker Desktop is installed and running on your system
-2. **Install Dev Containers Extension** - Ensure you have the "Dev Containers" extension installed in Cursor
-3. **Open the project** in Cursor:
+```python
+from n8n_python_sdk import (
+    Workflow, 
+    ManualTriggerNode, 
+    HTTPRequestNode, 
+    GoogleSheetsNode,
+    configure_logging
+)
+
+# Configure logging (optional)
+configure_logging(level='INFO')
+
+# Create a new workflow
+workflow = Workflow("My API to Sheets Workflow")
+
+# Create nodes
+trigger = ManualTriggerNode(name="Start Process")
+api_call = HTTPRequestNode(
+    name="Fetch User Data",
+    url="https://jsonplaceholder.typicode.com/users"
+)
+sheets_node = GoogleSheetsNode.append_or_update(
+    name="Save to Google Sheets",
+    document_id="your-google-sheet-id-here",
+    sheet_name="Sheet1",
+    columns={
+        "mappingMode": "defineBelow",
+        "value": {
+            "name": "={{ $json.name }}",
+            "email": "={{ $json.email }}",
+            "phone": "={{ $json.phone }}"
+        },
+        "matchingColumns": ["email"]
+    }
+)
+
+# Build the workflow
+workflow.add_nodes(trigger, api_call, sheets_node)
+workflow.connect(trigger, api_call)
+workflow.connect(api_call, sheets_node)
+
+# Export to n8n format
+workflow.export("my_workflow.json")
+print("✅ Workflow created and exported successfully!")
+```
+
+## 🚀 Getting Started
+
+### Run the Sample Workflow
+
+The easiest way to see the SDK in action:
 
 ```bash
-cursor .
+python3 main.py
 ```
 
-> **Note**: You might not be able to open Cursor by typing `cursor .`. If this doesn't work, search ChatGPT for "how to set up cursor command line" to find instructions for your operating system.
+This creates a complete workflow (Manual Trigger → HTTP Request → Google Sheets) and exports it to `n8n-workflows/workflow.json`.
 
-![Docker Desktop & Dev Containers running](images/01-dev-container-and-docker.png)
-
-### Step 3: Configure API Keys
-
-Open the `.env` file and provide your API keys:
-
-```env
-ANTHROPIC_API_KEY=your_anthropic_key_here
-PERPLEXITY_API_KEY=your_perplexity_key_here
-```
-
-![.env file configuration](images/02-env-variables.png)
-
-### Step 4: Open in Dev Container
-
-Click on **"Reopen in Container"** when prompted, or manually trigger it:
-
-1. Press `Cmd+Shift+P` (macOS) or `Ctrl+Shift+P` (Windows/Linux)
-2. Select **"Dev Containers: Open Folder in Container"**
-
-### Step 5: Wait for the Magic! ✨
-
-The system will automatically:
-
-- Create a Docker container
-- Install Claude Code
-- Install Task Master AI
-- Set up the MCP server
-
-You should see the Docker container running in the Docker Desktop app.
-
----
-
-## Detailed Setup Information
-
-## What Happens During Container Startup
-
-When the devcontainer starts, it automatically:
-
-1. **Builds the Docker environment** with Node.js, development tools, and dependencies
-2. **Sets up firewall rules** for secure network access
-3. **Loads environment variables** from your `.env` file
-4. **Installs Claude CLI and task-master-ai** packages
-5. **Configures the MCP connection** between Claude and task-master-ai
-6. **Verifies the connection** to ensure everything is working properly
-
-## Viewing Setup Logs
-
-During container initialization, you can monitor the setup progress in **Cursor's Terminal/Output panel**:
-
-1. **During Container Build**: Look for the "Dev Containers" output channel in Cursor's Terminal panel
-2. **Container Creation Logs**: The initialization logs appear in the terminal as the container starts
-3. **Post-Creation**: You can also view logs by running the setup script manually
-
-You'll see output similar to this during startup:
-
-```
-Initializing environment...
-Loading environment variables from .env file...
-Setting up firewall...
-Setting up MCP connection...
-Adding task-master-ai MCP connection...
-Verifying MCP connection status...
-✅ MCP connection verified successfully!
-🎉 MCP setup complete! You can now use task-master-ai through Claude MCP.
-```
-
-**To view logs after container is running:**
-
-- Check current MCP status: `claude mcp list`
-- Re-run setup manually: `sudo /usr/local/bin/setup-mcp.sh`
-- View initialization logs: Check Cursor's Terminal → Output → Dev Containers
-
-## Using the MCP Connection
-
-Once the container is running and the MCP connection is established, you can:
-
-### Check Connection Status
+### Interactive Usage
 
 ```bash
-claude mcp list
+python3
 ```
 
-This should show `task-master-ai` with a status of `connected`.
+Then in the Python REPL:
 
-### Use Task Master AI
-
-The task-master-ai tool is now available through Claude's MCP interface and can help with:
-
-- Project management and task organization
-- Code analysis and suggestions
-- Development workflow automation
-- Research and information gathering (via Perplexity integration)
-
-## File Structure
-
-```
-.
-├── .devcontainer/
-│   ├── devcontainer.json       # Dev container configuration
-│   ├── Dockerfile              # Container image definition
-│   ├── init-environment.sh     # Environment initialization script
-│   ├── setup-mcp.sh           # MCP connection setup script
-│   └── init-firewall.sh       # Network security setup
-├── .env.example               # Template for environment variables
-├── .env                       # Your actual API keys (don't commit!)
-├── .gitignore                # Git ignore rules
-└── README.md                 # This file
+```python
+>>> from n8n_python_sdk import Workflow, ManualTriggerNode
+>>> workflow = Workflow("Interactive Test")
+>>> trigger = ManualTriggerNode(name="Click to Start")
+>>> workflow.add_node(trigger)
+>>> workflow.export("interactive_test.json")
+>>> print(f"Created workflow with {len(workflow.nodes)} nodes")
 ```
 
-## Troubleshooting
+## 🧩 Supported Node Types
 
-### Connection Failed
+### Manual Trigger Node
+Perfect for workflows that need to be started manually:
 
-If the MCP connection fails during setup:
+```python
+trigger = ManualTriggerNode(name="Manual Start")
+```
 
-1. **Check your API keys** in the `.env` file
-2. **Verify internet connectivity** within the container
-3. **Manually retry the setup**:
-   ```bash
-   sudo /usr/local/bin/setup-mcp.sh
-   ```
+### HTTP Request Node
+For API calls and web requests:
 
-### Environment Variables Not Loaded
+```python
+http_node = HTTPRequestNode(
+    name="API Call",
+    url="https://api.example.com/data",
+    method="GET",  # GET, POST, PUT, DELETE, etc.
+    headers={"Authorization": "Bearer token"},
+    query_parameters={"limit": "100"}
+)
+```
 
-If environment variables aren't being loaded:
+### Google Sheets Node
+For Google Sheets integration:
 
-1. **Ensure the `.env` file exists** in the project root
-2. **Check the file format** - no spaces around the `=` sign
-3. **Rebuild the container**:
-   - Press `Cmd+Shift+P` → "Dev Containers: Rebuild Container"
+```python
+sheets_node = GoogleSheetsNode.append_or_update(
+    name="Update Sheet",
+    document_id="your-sheet-id",
+    sheet_name="Sheet1",
+    columns={
+        "mappingMode": "defineBelow",
+        "value": {
+            "name": "={{ $json.name }}",
+            "email": "={{ $json.email }}"
+        }
+    }
+)
+```
 
-### Network Issues
+## 🔧 Advanced Features
 
-If you encounter network connectivity problems:
+### Error Handling
 
-1. **Check Docker Desktop** is running
-2. **Verify firewall settings** on your host system
-3. **Try restarting** Docker Desktop
+The SDK provides comprehensive error handling with custom exceptions:
 
-### Manual MCP Management
+```python
+from n8n_python_sdk.exceptions import WorkflowError, NodeError, ValidationError
 
-You can manually manage MCP connections:
+try:
+    workflow = Workflow("My Workflow")
+    # ... workflow operations ...
+    workflow.export("output.json", validate=True)
+except WorkflowError as e:
+    print(f"Workflow error: {e} (Code: {e.code})")
+except ValidationError as e:
+    print(f"Validation failed: {e}")
+except Exception as e:
+    print(f"Unexpected error: {e}")
+```
+
+### Logging Configuration
+
+Configure logging to monitor SDK operations:
+
+```python
+from n8n_python_sdk.logging_config import (
+    configure_logging, 
+    enable_debug_logging,
+    set_log_level
+)
+
+# Basic configuration
+configure_logging(level='INFO')
+
+# Advanced configuration with file output
+configure_logging(
+    level='DEBUG',
+    enable_file_logging=True,
+    log_file_path='n8n_sdk.log',
+    max_file_size=10*1024*1024  # 10MB
+)
+
+# Quick debug mode
+enable_debug_logging()
+
+# Change log level dynamically
+set_log_level('WARNING')
+```
+
+### Workflow Validation
+
+Validate workflows before export:
+
+```python
+# Manual validation
+errors = workflow.validate()
+if errors:
+    print("Validation errors:")
+    for error in errors:
+        print(f"  - {error}")
+else:
+    print("✅ Workflow is valid!")
+
+# Automatic validation during export
+workflow.export("workflow.json", validate=True)  # Raises exception if invalid
+```
+
+## 🧪 Testing
+
+The SDK includes comprehensive test suites:
 
 ```bash
-# List all MCP connections
-claude mcp list
+# Test all functionality and error handling
+python3 test_error_handling.py
 
-# Remove a connection
-claude mcp remove task-master-ai
+# Test package imports and API
+python3 test_package_imports.py
 
-# Re-add the connection
-sudo /usr/local/bin/setup-mcp.sh
+# Test cross-context imports
+cd test_contexts
+python3 test_from_subdirectory.py
+python3 test_multiple_contexts.py
 ```
 
-## Development Features
+All tests should pass with ✅ status indicators.
 
-This devcontainer includes:
+## 📁 Project Structure
 
-- **Node.js 22** runtime environment
-- **Git** with delta for better diffs
-- **ESLint and Prettier** for code quality
-- **Zsh with Powerlevel10k** theme
-- **Network security** with firewall rules
-- **Persistent command history**
-- **Port forwarding** for web development (port 3000)
+```
+n8n_python_sdk/
+├── __init__.py                    # Public API exports
+├── workflow.py                    # Main Workflow class
+├── node.py                        # Base Node class
+├── exceptions.py                  # Custom exception classes
+├── logging_config.py              # Logging utilities
+├── nodes/                         # Specialized node implementations
+│   ├── manual_trigger.py
+│   ├── http_request.py
+│   └── google_sheets.py
+└── utils/                         # Utility modules
+    └── json_parser.py
 
-## Security Notes
+examples/
+├── main.py                        # Sample workflow creation
+├── test_error_handling.py         # Error handling examples
+└── test_package_imports.py        # Import testing
 
-- The container runs with restricted network access via firewall rules
-- Only whitelisted domains (GitHub, NPM, Anthropic, etc.) are accessible
-- API keys are kept in environment variables and not logged
-- The `.env` file is automatically excluded from version control
+documentation/
+└── LOGGING_AND_ERROR_HANDLING.md  # Comprehensive guides
+```
 
-## Support
+## 🎯 Use Cases
 
-If you encounter issues:
+### Simple API Integration
+```python
+# Fetch data from an API and process it
+workflow = Workflow("API Integration")
+trigger = ManualTriggerNode(name="Start")
+fetch = HTTPRequestNode(name="Get Data", url="https://api.example.com/users")
 
-1. Check the container logs during startup
-2. Verify your API keys are valid and have the necessary permissions
-3. Ensure Docker Desktop has sufficient resources allocated
-4. Try rebuilding the container if problems persist
+workflow.add_nodes(trigger, fetch)
+workflow.connect(trigger, fetch)
+workflow.export("api_integration.json")
+```
 
-## Credits
+### Data Pipeline
+```python
+# Multi-step data processing pipeline
+workflow = Workflow("Data Pipeline")
+trigger = ManualTriggerNode(name="Start Pipeline")
+extract = HTTPRequestNode(name="Extract Data", url="https://source-api.com/data")
+transform = HTTPRequestNode(name="Transform", url="https://processor.com/transform", method="POST")
+load = GoogleSheetsNode.append_or_update(name="Load to Sheets", document_id="sheet-id")
 
-This repository was created by **[Aemal Sayer](https://aemalsayer.com)**, an experienced software engineer with 23 years of software development experience, including 17 years as a full-stack developer and 7+ years in AI/ML. For the past 2.5 years, he has been specializing in building AI agents.
+workflow.add_nodes(trigger, extract, transform, load)
+workflow.connect(trigger, extract)
+workflow.connect(extract, transform)
+workflow.connect(transform, load)
+workflow.export("data_pipeline.json")
+```
 
-**Connect with Aemal:**
+### Batch Processing
+```python
+# Create multiple similar workflows programmatically
+for api_endpoint in ["users", "posts", "comments"]:
+    workflow = Workflow(f"Process {api_endpoint.title()}")
+    trigger = ManualTriggerNode(name=f"Start {api_endpoint}")
+    api_call = HTTPRequestNode(
+        name=f"Fetch {api_endpoint}",
+        url=f"https://jsonplaceholder.typicode.com/{api_endpoint}"
+    )
+    
+    workflow.add_nodes(trigger, api_call)
+    workflow.connect(trigger, api_call)
+    workflow.export(f"{api_endpoint}_workflow.json")
+```
 
-- 🌐 Website: [aemalsayer.com](https://aemalsayer.com)
-- 💼 LinkedIn: [linkedin.com/in/aemal](https://linkedin.com/in/aemal)
-- 📺 YouTube: [youtube.com/@agentgeeks](https://youtube.com/@agentgeeks)
+## 🔍 Troubleshooting
 
-## License
+### Import Issues
+If you encounter import errors, ensure the SDK is in your Python path:
+
+```python
+import sys
+import os
+sys.path.insert(0, '/path/to/n8n-python-sdk')
+
+from n8n_python_sdk import Workflow
+```
+
+### Validation Errors
+Common validation issues and solutions:
+
+- **Empty workflow name**: Provide a non-empty name when creating workflows
+- **No nodes**: Add at least one node to the workflow before exporting
+- **Invalid connections**: Ensure both nodes exist in the workflow before connecting them
+- **Duplicate node IDs**: Each node must have a unique ID within the workflow
+
+### Logging Issues
+If logging isn't working:
+
+```python
+# Ensure logging is configured
+from n8n_python_sdk.logging_config import configure_logging
+configure_logging(level='DEBUG')  # Use DEBUG for maximum visibility
+```
+
+## 📈 Extensibility
+
+The SDK is designed for easy extension with new node types:
+
+```python
+from n8n_python_sdk import Node
+
+class SlackNode(Node):
+    def __init__(self, name: str, channel: str, message: str):
+        super().__init__(
+            node_type="n8n-nodes-base.slack",
+            name=name,
+            parameters={
+                "channel": channel,
+                "text": message
+            }
+        )
+
+# Use your custom node
+slack = SlackNode(name="Send Notification", channel="#general", message="Hello!")
+workflow.add_node(slack)
+```
+
+## 🔗 n8n Integration
+
+Generated workflow files can be directly imported into n8n:
+
+1. **Export your workflow**: `workflow.export("my_workflow.json")`
+2. **Open n8n**: Navigate to your n8n instance
+3. **Import workflow**: Go to Workflows → Import from File
+4. **Select file**: Choose your generated JSON file
+5. **Configure credentials**: Set up any required API credentials
+6. **Execute**: Your programmatically created workflow is ready!
+
+## 🛠️ Development
+
+### Prerequisites
+- Python 3.6+
+- No external dependencies required for core functionality
+
+### Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass
+5. Submit a pull request
+
+### Code Quality
+The SDK follows Python best practices:
+- Type hints throughout
+- Comprehensive error handling
+- Extensive documentation
+- Full test coverage
+- Clean, readable code structure
+
+## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 🙋‍♂️ Support
+
+If you encounter issues or have questions:
+
+1. Check the comprehensive test files for usage examples
+2. Review the error handling documentation
+3. Enable debug logging to see detailed SDK operations
+4. Consult the validation error messages for specific guidance
+
+## 🎉 Credits
+
+This n8n Python SDK was developed during the **n8n and Vibe Coding Hackathon** organized by n8n Ambassador **Aemal Sayer**.
+
+**Hackathon Team:**
+- Promit
+- Aemal
+- Mohammad
+- Paul
+- George
+- David
+- Ashwin
+
+This SDK provides a powerful, Pythonic way to create and manage n8n workflows programmatically. It's designed to be intuitive for Python developers while maintaining full compatibility with n8n's workflow format.
+
+**Happy Automating!** 🚀
+
 ---
 
-**Note**: This setup is designed for development and testing purposes. For production use, consider additional security measures and proper secrets management.
+**Note**: This SDK generates n8n-compatible JSON files. For actual workflow execution, you'll need an n8n instance. The SDK focuses on workflow definition and export, making it easy to version control and programmatically generate complex automation workflows.
