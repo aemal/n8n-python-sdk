@@ -1,0 +1,1054 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Project Structure Setup",
+        "description": "Set up the initial project structure with necessary folders and files according to the PRD requirements.",
+        "details": "Create the following directory structure:\n- /sdk/: Main SDK module directory\n  - sdk.py: Main SDK implementation file\n  - __init__.py: Package initialization file\n- /n8n-nodes/: Directory for node JSON files\n- /n8n-workflows/: Directory for workflow JSON files\n- main.py: Sample implementation file\n\nInitialize a git repository with a proper .gitignore file for Python projects. Create a README.md with basic project description and usage instructions. Set up a requirements.txt file (initially empty as the MVP doesn't require external dependencies).",
+        "testStrategy": "Verify that all directories and files are created with the correct structure. Ensure git repository is initialized properly with appropriate .gitignore settings for Python projects.",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Directory Structure",
+            "description": "Set up the required folders and files according to the specified project structure",
+            "dependencies": [],
+            "details": "Create the following directories and files:\n- /sdk/ directory with sdk.py and __init__.py files\n- /n8n-nodes/ directory for node JSON files\n- /n8n-workflows/ directory for workflow JSON files\n- main.py file in the root directory",
+            "status": "pending",
+            "testStrategy": "Verify that all directories and files exist in the correct locations with the proper naming"
+          },
+          {
+            "id": 2,
+            "title": "Initialize Git Repository",
+            "description": "Set up a git repository with appropriate .gitignore file for Python projects",
+            "dependencies": [],
+            "details": "Run git init in the project root directory. Create a .gitignore file with standard Python project exclusions (e.g., __pycache__/, *.pyc, .env, venv/, etc.). Make an initial commit with the created directory structure.",
+            "status": "pending",
+            "testStrategy": "Confirm that .git directory exists, .gitignore contains appropriate Python exclusions, and initial commit includes the project structure"
+          },
+          {
+            "id": 3,
+            "title": "Create README.md",
+            "description": "Create a README.md file with basic project description and usage instructions",
+            "dependencies": [],
+            "details": "Create a README.md file in the root directory that includes:\n- Project title and brief description\n- Installation instructions\n- Basic usage examples\n- Project structure overview\n- Any relevant links or references",
+            "status": "pending",
+            "testStrategy": "Verify README.md exists, contains all required sections, and provides clear instructions for users"
+          },
+          {
+            "id": 4,
+            "title": "Set Up requirements.txt",
+            "description": "Create an initially empty requirements.txt file for future dependencies",
+            "dependencies": [],
+            "details": "Create a requirements.txt file in the root directory. Since the MVP doesn't require external dependencies, this file will initially be empty but structured to allow for future additions.",
+            "status": "pending",
+            "testStrategy": "Confirm requirements.txt exists in the root directory"
+          },
+          {
+            "id": 5,
+            "title": "Create Sample Implementation Files",
+            "description": "Create skeleton/placeholder files for the SDK implementation",
+            "dependencies": [],
+            "details": "Create basic skeleton files with appropriate docstrings and placeholder code:\n- sdk/sdk.py: Add class definitions with docstrings for Node and Workflow classes\n- sdk/__init__.py: Add imports and version information\n- main.py: Add a simple example showing how to use the SDK",
+            "status": "pending",
+            "testStrategy": "Verify that all files contain appropriate placeholder code, follow Python conventions, and include proper docstrings"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Import and Parse n8n Node JSON Files",
+        "description": "Create utilities to import and parse the provided n8n node JSON files from the n8n-workflows folder.",
+        "details": "Implement a utility function that can read and parse JSON files from the n8n-workflows folder. This function should:\n1. Accept a file path as input\n2. Read the JSON file\n3. Parse it into a Python dictionary\n4. Validate that it contains the expected n8n workflow structure\n\nImplementation example:\n```python\nimport json\nimport os\nfrom typing import Dict, Any\n\ndef read_node_json(file_path: str) -> Dict[str, Any]:\n    \"\"\"Read and parse an n8n node JSON file.\"\"\"\n    if not os.path.exists(file_path):\n        raise FileNotFoundError(f\"Node file not found: {file_path}\")\n    \n    with open(file_path, 'r') as f:\n        node_data = json.load(f)\n    \n    # Basic validation that this is an n8n node\n    if not isinstance(node_data, dict):\n        raise ValueError(f\"Invalid node format in {file_path}\")\n    \n    return node_data\n```",
+        "testStrategy": "Test with the provided n8n node JSON files (Click trigger, HTTP request, Google Sheet). Verify that the function correctly reads and parses the files. Test error handling with non-existent files and malformed JSON.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create File Path Validation Function",
+            "description": "Implement a function to validate if a file exists at the given path and has a .json extension",
+            "dependencies": [],
+            "details": "Create a helper function that checks if the provided file path exists and has a .json extension. This function should throw appropriate exceptions with clear error messages when validation fails. It will be used by the main parsing function to ensure valid inputs.",
+            "status": "pending",
+            "testStrategy": "Test with existing files, non-existing files, files with incorrect extensions, and edge cases like empty strings or None values."
+          },
+          {
+            "id": 2,
+            "title": "Implement JSON Reading and Parsing",
+            "description": "Create a function to read JSON content from files and handle potential JSON parsing errors",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "Implement a function that opens and reads a JSON file, handling any IO exceptions that might occur. The function should use Python's json module to parse the content and convert it to a Python dictionary, with proper error handling for malformed JSON.",
+            "status": "pending",
+            "testStrategy": "Test with valid JSON files, malformed JSON files, empty files, and files with unexpected content. Verify error messages are clear and helpful."
+          },
+          {
+            "id": 3,
+            "title": "Develop n8n Workflow Structure Validation",
+            "description": "Create validation logic to ensure the parsed JSON has the expected n8n workflow structure",
+            "dependencies": [
+              "2.2"
+            ],
+            "details": "Implement validation logic that checks if the parsed JSON dictionary contains the expected structure of an n8n workflow. This should verify the presence of required keys and proper data types for essential workflow components. The validation should be thorough enough to catch malformed workflows but flexible enough to handle different versions of n8n workflows.",
+            "status": "pending",
+            "testStrategy": "Test with valid n8n workflow files, partially valid files missing some keys, completely invalid structures, and workflows from different n8n versions."
+          },
+          {
+            "id": 4,
+            "title": "Create Main read_node_json Function",
+            "description": "Implement the main utility function that combines validation, reading, and parsing",
+            "dependencies": [
+              "2.1",
+              "2.2",
+              "2.3"
+            ],
+            "details": "Implement the main read_node_json function as specified in the example, which combines the file validation, JSON reading, and workflow structure validation. This function should accept a file path as input and return a properly parsed Python dictionary representing the n8n workflow.",
+            "status": "pending",
+            "testStrategy": "Test with the provided n8n node JSON files (Click trigger, HTTP request, Google Sheet). Verify correct parsing and error handling with various input scenarios."
+          },
+          {
+            "id": 5,
+            "title": "Create Batch Processing Function for Multiple Workflows",
+            "description": "Implement a utility to process multiple workflow files from a directory",
+            "dependencies": [
+              "2.4"
+            ],
+            "details": "Create a function that can scan a directory for n8n workflow JSON files and process them in batch. This function should use the read_node_json function internally and return a dictionary mapping file names to their parsed workflow data. Include options for recursive directory scanning and filtering by filename patterns.",
+            "status": "pending",
+            "testStrategy": "Test with directories containing multiple workflow files, empty directories, directories with mixed valid and invalid files, and various filtering patterns."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Define Node Class",
+        "description": "Create the Node class that represents an n8n node with all necessary attributes and methods.",
+        "details": "Implement the Node class with the following features:\n\n```python\nfrom typing import Dict, Any, Tuple, Optional, Union\nimport uuid\n\nclass Node:\n    def __init__(self, \n                 id: Optional[str] = None,\n                 name: str = \"\",\n                 type: str = \"\",\n                 typeVersion: Union[int, float] = 1,\n                 position: Tuple[int, int] = (0, 0),\n                 params: Dict[str, Any] = None,\n                 credentials: Dict[str, Any] = None):\n        # Generate UUID if not provided\n        self.id = id if id else str(uuid.uuid4())\n        self.name = name\n        self.type = type\n        self.typeVersion = typeVersion\n        self.position = position\n        self.params = params or {}\n        self.credentials = credentials or {}\n    \n    def to_dict(self) -> Dict[str, Any]:\n        \"\"\"Convert the Node to a dictionary compatible with n8n's JSON format.\"\"\"\n        return {\n            \"id\": self.id,\n            \"name\": self.name,\n            \"type\": self.type,\n            \"typeVersion\": self.typeVersion,\n            \"position\": list(self.position),  # Convert tuple to list for JSON serialization\n            \"parameters\": self.params,\n            \"credentials\": self.credentials\n        }\n    \n    @classmethod\n    def from_dict(cls, data: Dict[str, Any]) -> 'Node':\n        \"\"\"Create a Node instance from a dictionary.\"\"\"\n        position = tuple(data.get(\"position\", [0, 0]))\n        return cls(\n            id=data.get(\"id\"),\n            name=data.get(\"name\", \"\"),\n            type=data.get(\"type\", \"\"),\n            typeVersion=data.get(\"typeVersion\", 1),\n            position=position,\n            params=data.get(\"parameters\", {}),\n            credentials=data.get(\"credentials\", {})\n        )\n```\n\nThe Node class should handle all the properties required by n8n nodes, including id, name, type, typeVersion, position, parameters, and credentials. It should provide methods to convert between Python objects and n8n's JSON format.",
+        "testStrategy": "Create test cases for Node initialization with different parameters. Test the to_dict() method to ensure it produces valid n8n node JSON. Test the from_dict() method with sample node data from the provided n8n node files. Verify that conversion between Python objects and JSON is lossless.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Node Constructor",
+            "description": "Implement the Node class constructor with all required parameters and default values",
+            "dependencies": [],
+            "details": "Complete the implementation of the Node class constructor that initializes all necessary attributes including id, name, type, typeVersion, position, params, and credentials. Ensure UUID generation for missing IDs and proper default values for all parameters.",
+            "status": "pending",
+            "testStrategy": "Test Node initialization with various parameter combinations including default values, custom values, and edge cases. Verify that UUID is generated correctly when ID is not provided."
+          },
+          {
+            "id": 2,
+            "title": "Implement to_dict Method",
+            "description": "Implement the to_dict method to convert Node objects to n8n-compatible JSON format",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Complete the to_dict method that converts a Node instance to a dictionary compatible with n8n's JSON format. Ensure proper conversion of all attributes, including position tuple to list for JSON serialization.",
+            "status": "pending",
+            "testStrategy": "Test the to_dict method with various Node configurations and verify the output matches the expected n8n JSON format. Test with different position values, parameter types, and credential configurations."
+          },
+          {
+            "id": 3,
+            "title": "Implement from_dict Method",
+            "description": "Implement the from_dict class method to create Node objects from n8n JSON data",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Complete the from_dict class method that creates a Node instance from a dictionary representing n8n node data. Ensure proper extraction and conversion of all attributes, including position list to tuple.",
+            "status": "pending",
+            "testStrategy": "Test the from_dict method with sample n8n node data, including minimal and complete configurations. Verify that all attributes are correctly extracted and converted."
+          },
+          {
+            "id": 4,
+            "title": "Add Node Validation Methods",
+            "description": "Add methods to validate Node configuration and parameters",
+            "dependencies": [
+              "3.1",
+              "3.2",
+              "3.3"
+            ],
+            "details": "Implement validation methods to ensure Node configurations are valid according to n8n requirements. Include validation for required fields, parameter types, and position format. Add a is_valid() method that returns a boolean indicating if the node configuration is valid.",
+            "status": "pending",
+            "testStrategy": "Test validation methods with valid and invalid node configurations. Verify that validation correctly identifies missing required fields, invalid parameter types, and malformed position data."
+          },
+          {
+            "id": 5,
+            "title": "Add Node Comparison and Equality Methods",
+            "description": "Implement __eq__ and __repr__ methods for Node comparison and representation",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Implement the __eq__ method to allow comparison between Node instances based on their attributes. Implement the __repr__ method to provide a string representation of the Node for debugging purposes. These methods will enhance the usability of the Node class in testing and debugging scenarios.",
+            "status": "pending",
+            "testStrategy": "Test equality comparison between identical nodes, nodes with the same ID but different attributes, and completely different nodes. Test string representation for readability and completeness."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Implement Workflow Class",
+        "description": "Create the Workflow class that represents an n8n workflow with methods to add nodes and create connections between them.",
+        "details": "Implement the Workflow class with the following features:\n\n```python\nfrom typing import Dict, Any, List, Optional, Union, Tuple\nimport json\nimport uuid\nfrom datetime import datetime\n\nclass Workflow:\n    def __init__(self, name: str = \"Untitled Workflow\", id: Optional[str] = None):\n        self.id = id if id else str(uuid.uuid4())\n        self.name = name\n        self.nodes = []\n        self.connections = {}\n        self.active = True\n        self.settings = {}\n        self.tags = []\n        self.created_at = datetime.now().isoformat()\n        self.updated_at = self.created_at\n    \n    def add_node(self, node: Node) -> None:\n        \"\"\"Add a single node to the workflow.\"\"\"\n        self.nodes.append(node)\n    \n    def add_nodes(self, *nodes: Node) -> None:\n        \"\"\"Add multiple nodes to the workflow.\"\"\"\n        for node in nodes:\n            self.add_node(node)\n    \n    def connect(self, source_node: Node, target_node: Node, \n                source_output: str = \"main\", target_input: str = \"main\") -> None:\n        \"\"\"Create a connection between two nodes.\"\"\"\n        if source_node not in self.nodes or target_node not in self.nodes:\n            raise ValueError(\"Both nodes must be added to the workflow before connecting\")\n        \n        # Initialize connection structure if needed\n        if source_node.id not in self.connections:\n            self.connections[source_node.id] = {}\n        \n        if source_output not in self.connections[source_node.id]:\n            self.connections[source_node.id][source_output] = []\n        \n        # Add the connection\n        self.connections[source_node.id][source_output].append({\n            \"node\": target_node.id,\n            \"type\": target_input\n        })\n    \n    def to_dict(self) -> Dict[str, Any]:\n        \"\"\"Convert the workflow to a dictionary compatible with n8n's JSON format.\"\"\"\n        return {\n            \"id\": self.id,\n            \"name\": self.name,\n            \"nodes\": [node.to_dict() for node in self.nodes],\n            \"connections\": self.connections,\n            \"active\": self.active,\n            \"settings\": self.settings,\n            \"tags\": self.tags,\n            \"createdAt\": self.created_at,\n            \"updatedAt\": self.updated_at\n        }\n    \n    def export(self, file_path: str) -> None:\n        \"\"\"Export the workflow to a JSON file.\"\"\"\n        with open(file_path, 'w') as f:\n            json.dump(self.to_dict(), f, indent=2)\n```\n\nThe Workflow class should manage a collection of nodes and their connections, providing methods to add nodes, connect them, and export the workflow to a valid n8n workflow JSON file.",
+        "testStrategy": "Test workflow initialization with different parameters. Test adding nodes individually and in batches. Test creating connections between nodes. Test the to_dict() method to ensure it produces valid n8n workflow JSON. Test the export() method by writing to a file and verifying the contents. Verify that the exported JSON can be imported into n8n.",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Workflow Class Constructor and Basic Properties",
+            "description": "Create the Workflow class with constructor and initialize all required properties for an n8n workflow.",
+            "dependencies": [],
+            "details": "Implement the Workflow class constructor that initializes properties like id, name, nodes list, connections dictionary, active status, settings, tags, and timestamps. Ensure proper type hints are used and default values are set appropriately. The constructor should accept optional parameters for customization.",
+            "status": "pending",
+            "testStrategy": "Test workflow initialization with different parameters including default and custom values. Verify that all properties are correctly initialized and that UUIDs are generated when no ID is provided."
+          },
+          {
+            "id": 2,
+            "title": "Implement Node Management Methods",
+            "description": "Create methods to add individual nodes and multiple nodes to the workflow.",
+            "dependencies": [
+              "4.1"
+            ],
+            "details": "Implement the add_node() method to add a single node to the workflow's nodes list. Implement the add_nodes() method that accepts variable arguments to add multiple nodes at once. Both methods should handle type checking and ensure nodes are properly added to the workflow.",
+            "status": "pending",
+            "testStrategy": "Test adding nodes individually and in batches. Verify that nodes are correctly stored in the workflow. Test edge cases like adding the same node multiple times."
+          },
+          {
+            "id": 3,
+            "title": "Implement Node Connection Methods",
+            "description": "Create the connect method to establish connections between nodes in the workflow.",
+            "dependencies": [
+              "4.1",
+              "4.2"
+            ],
+            "details": "Implement the connect() method that creates connections between source and target nodes. The method should validate that both nodes exist in the workflow, initialize the connection structure if needed, and add the connection with proper source output and target input types. It should raise appropriate exceptions for invalid connections.",
+            "status": "pending",
+            "testStrategy": "Test creating connections between nodes with different output and input types. Test error handling when connecting nodes not in the workflow. Verify the structure of the connections dictionary matches n8n's expected format."
+          },
+          {
+            "id": 4,
+            "title": "Implement Workflow Serialization Methods",
+            "description": "Create methods to convert the workflow to a dictionary and export it to a JSON file.",
+            "dependencies": [
+              "4.1",
+              "4.2",
+              "4.3"
+            ],
+            "details": "Implement the to_dict() method that converts the workflow object to a dictionary compatible with n8n's JSON format. This should include all workflow properties and convert all nodes to their dictionary representation. Implement the export() method that writes the workflow dictionary to a JSON file at the specified path.",
+            "status": "pending",
+            "testStrategy": "Test the to_dict() method to ensure it produces valid n8n workflow JSON with all required fields. Test the export() method by writing to a file and verifying the contents match the expected format. Test with workflows of varying complexity."
+          },
+          {
+            "id": 5,
+            "title": "Add Documentation and Type Hints",
+            "description": "Complete the class implementation with comprehensive docstrings and proper type hints.",
+            "dependencies": [
+              "4.1",
+              "4.2",
+              "4.3",
+              "4.4"
+            ],
+            "details": "Add detailed docstrings to all methods explaining parameters, return values, and exceptions. Ensure all methods have proper type hints using the typing module. Include examples in docstrings where appropriate. Add class-level documentation explaining the purpose and usage of the Workflow class.",
+            "status": "pending",
+            "testStrategy": "Verify documentation completeness using tools like pydocstyle. Check type hint correctness with mypy. Ensure examples in docstrings are valid and executable."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Implement Manual Trigger Node",
+        "description": "Create a specialized class for the Manual Trigger node (n8n-nodes-base.manualTrigger) with appropriate defaults and configuration options.",
+        "details": "Implement a specialized class for the Manual Trigger node that extends the base Node class:\n\n```python\nclass ManualTriggerNode(Node):\n    def __init__(self, \n                 id: Optional[str] = None,\n                 name: str = \"When clicking 'Execute workflow'\",\n                 position: Tuple[int, int] = (0, 0)):\n        super().__init__(\n            id=id,\n            name=name,\n            type=\"n8n-nodes-base.manualTrigger\",\n            typeVersion=1,\n            position=position,\n            params={}\n        )\n```\n\nThis class should provide a simplified interface for creating a Manual Trigger node with appropriate defaults. The implementation should be based on the provided n8n node JSON file for the Manual Trigger node.",
+        "testStrategy": "Test creating a ManualTriggerNode with default parameters. Test creating a ManualTriggerNode with custom parameters. Verify that the to_dict() method produces a valid n8n Manual Trigger node JSON that matches the expected format from the provided n8n node files.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Study Manual Trigger Node JSON structure",
+            "description": "Analyze the n8n Manual Trigger node JSON structure to understand its properties, defaults, and configuration options.",
+            "dependencies": [],
+            "details": "Examine the provided n8n node JSON file for the Manual Trigger node to understand its structure, required properties, and default values. Document the key properties that need to be implemented in the ManualTriggerNode class. Pay special attention to any required parameters, optional configurations, and output structure.",
+            "status": "pending",
+            "testStrategy": "Create documentation of the Manual Trigger node structure with all relevant properties and their default values. Verify the documentation against the actual n8n node JSON file."
+          },
+          {
+            "id": 2,
+            "title": "Implement ManualTriggerNode constructor",
+            "description": "Implement the constructor for the ManualTriggerNode class with appropriate default parameters and type hints.",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Complete the implementation of the ManualTriggerNode constructor based on the provided skeleton code. Ensure proper type hints are used for all parameters. Set appropriate default values for all parameters based on the analysis of the Manual Trigger node JSON structure. Implement proper inheritance from the base Node class.",
+            "status": "pending",
+            "testStrategy": "Test creating a ManualTriggerNode with default parameters. Verify that all default values are set correctly. Test creating a ManualTriggerNode with custom parameters and verify they override the defaults."
+          },
+          {
+            "id": 3,
+            "title": "Implement node-specific methods",
+            "description": "Add any node-specific methods required for the ManualTriggerNode class beyond the basic constructor.",
+            "dependencies": [
+              "5.2"
+            ],
+            "details": "Implement any additional methods needed for the ManualTriggerNode class, such as methods to configure node-specific options or to provide a simplified interface for common operations. This may include helper methods for setting parameters or configuring outputs based on the Manual Trigger node's capabilities.",
+            "status": "pending",
+            "testStrategy": "Test each implemented method with various inputs to ensure they correctly modify the node's configuration. Verify that the methods maintain the node's validity according to n8n's requirements."
+          },
+          {
+            "id": 4,
+            "title": "Override to_dict method",
+            "description": "Override the to_dict method from the base Node class if necessary to handle Manual Trigger node-specific serialization.",
+            "dependencies": [
+              "5.2",
+              "5.3"
+            ],
+            "details": "Determine if the base Node class's to_dict method needs to be overridden for the ManualTriggerNode class. If needed, implement the override to ensure that the node is properly serialized to match the expected n8n Manual Trigger node JSON format. Ensure all node-specific properties are correctly included in the output.",
+            "status": "pending",
+            "testStrategy": "Test the to_dict method with various node configurations. Compare the output JSON with the expected format from the n8n Manual Trigger node documentation. Verify that all properties are correctly serialized."
+          },
+          {
+            "id": 5,
+            "title": "Write comprehensive tests",
+            "description": "Create unit tests for the ManualTriggerNode class to ensure it functions correctly and produces valid n8n node JSON.",
+            "dependencies": [
+              "5.2",
+              "5.3",
+              "5.4"
+            ],
+            "details": "Develop comprehensive unit tests for the ManualTriggerNode class. Tests should cover initialization with default and custom parameters, any node-specific methods, and serialization via to_dict(). Verify that the generated JSON matches the expected format for n8n Manual Trigger nodes. Include edge cases and validation tests.",
+            "status": "pending",
+            "testStrategy": "Create test cases for: 1) Default initialization, 2) Custom parameter initialization, 3) Method functionality, 4) JSON serialization accuracy, 5) Integration with the Workflow class. Use pytest fixtures to set up test environments. Compare serialized output with expected JSON structures."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Implement HTTP Request Node",
+        "description": "Create a specialized class for the HTTP Request node (n8n-nodes-base.httpRequest) with appropriate defaults and configuration options.",
+        "details": "Implement a specialized class for the HTTP Request node that extends the base Node class:\n\n```python\nfrom typing import Dict, Any, Optional, Tuple, Union, List\n\nclass HTTPRequestNode(Node):\n    def __init__(self, \n                 id: Optional[str] = None,\n                 name: str = \"HTTP Request\",\n                 position: Tuple[int, int] = (0, 0),\n                 url: str = \"\",\n                 method: str = \"GET\",\n                 authentication: str = \"none\",\n                 headers: Dict[str, str] = None,\n                 query_parameters: List[Dict[str, str]] = None,\n                 body_content_type: str = \"json\",\n                 body: Any = None,\n                 response_format: str = \"json\",\n                 options: Dict[str, Any] = None):\n        \n        params = {\n            \"url\": url,\n            \"method\": method,\n            \"authentication\": authentication,\n            \"responseFormat\": response_format,\n            \"options\": options or {}\n        }\n        \n        # Add headers if provided\n        if headers:\n            params[\"headers\"] = {\n                \"parameters\": [{\n                    \"name\": name,\n                    \"value\": value\n                } for name, value in headers.items()]\n            }\n        \n        # Add query parameters if provided\n        if query_parameters:\n            params[\"queryParameters\"] = {\n                \"parameters\": query_parameters\n            }\n        \n        # Add body if provided\n        if body is not None:\n            params[\"bodyContentType\"] = body_content_type\n            if body_content_type == \"json\":\n                params[\"jsonParameters\"] = True\n                params[\"body\"] = body\n        \n        super().__init__(\n            id=id,\n            name=name,\n            type=\"n8n-nodes-base.httpRequest\",\n            typeVersion=4.2,  # Use the version from the PRD\n            position=position,\n            params=params\n        )\n```\n\nThis class should provide a simplified interface for creating an HTTP Request node with appropriate defaults and configuration options. The implementation should be based on the provided n8n node JSON file for the HTTP Request node.",
+        "testStrategy": "Test creating an HTTPRequestNode with default parameters. Test creating an HTTPRequestNode with custom parameters for different HTTP methods, authentication types, headers, query parameters, and body content types. Verify that the to_dict() method produces a valid n8n HTTP Request node JSON that matches the expected format from the provided n8n node files.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Analyze HTTP Request Node JSON structure",
+            "description": "Examine the n8n HTTP Request node JSON structure to understand all available parameters and their formats",
+            "dependencies": [],
+            "details": "Review the n8n HTTP Request node JSON structure to identify all parameters, their types, default values, and relationships. Document the required and optional parameters, authentication methods, body content types, and response formats. This analysis will inform the implementation of the HTTPRequestNode class constructor and parameter handling.",
+            "status": "pending",
+            "testStrategy": "Create a document listing all parameters with their types, default values, and descriptions. Verify completeness by comparing with the n8n documentation and actual node behavior."
+          },
+          {
+            "id": 2,
+            "title": "Implement constructor parameter handling",
+            "description": "Complete the constructor implementation to properly handle all input parameters and set appropriate defaults",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Enhance the constructor to properly handle all input parameters including authentication options, headers, query parameters, body content types, and response formats. Implement proper type checking and validation for all parameters. Ensure default values match n8n's defaults for the HTTP Request node.",
+            "status": "pending",
+            "testStrategy": "Test constructor with various parameter combinations. Verify that default values are applied correctly when parameters are omitted. Test with invalid parameters to ensure proper error handling."
+          },
+          {
+            "id": 3,
+            "title": "Implement authentication methods",
+            "description": "Add support for different authentication methods (Basic Auth, OAuth2, API Key, etc.)",
+            "dependencies": [
+              "6.2"
+            ],
+            "details": "Implement support for all authentication methods supported by the HTTP Request node, including Basic Auth, OAuth2, Bearer Token, Digest Auth, and API Key. Each authentication method should have its own parameter structure and validation. Update the constructor to handle these authentication methods and set the appropriate parameters in the node configuration.",
+            "status": "pending",
+            "testStrategy": "Test each authentication method with valid and invalid credentials. Verify that the generated node configuration matches the expected format for each authentication method."
+          },
+          {
+            "id": 4,
+            "title": "Implement body content handling",
+            "description": "Add support for different body content types (JSON, Form, Form-Data, Binary, Raw)",
+            "dependencies": [
+              "6.2"
+            ],
+            "details": "Implement support for all body content types supported by the HTTP Request node, including JSON, Form, Form-Data, Binary, and Raw. Each content type should have its own parameter structure and validation. Update the constructor to handle these content types and set the appropriate parameters in the node configuration.",
+            "status": "pending",
+            "testStrategy": "Test each body content type with various data structures. Verify that the generated node configuration matches the expected format for each content type."
+          },
+          {
+            "id": 5,
+            "title": "Add helper methods for common operations",
+            "description": "Implement helper methods for common operations like setting headers, query parameters, and response handling options",
+            "dependencies": [
+              "6.2",
+              "6.3",
+              "6.4"
+            ],
+            "details": "Add helper methods to the HTTPRequestNode class to simplify common operations such as adding headers, setting query parameters, configuring response handling options, and setting timeout values. These methods should provide a more intuitive interface for configuring the node compared to directly manipulating the params dictionary. Include methods for setting pagination options, proxy configuration, and SSL/TLS options.",
+            "status": "pending",
+            "testStrategy": "Test each helper method with various inputs. Verify that the methods correctly update the node configuration. Test chaining multiple helper methods together to build a complete node configuration."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Implement Google Sheets Node",
+        "description": "Create a specialized class for the Google Sheets node (n8n-nodes-base.googleSheets) with appropriate defaults and configuration options.",
+        "details": "Implement a specialized class for the Google Sheets node that extends the base Node class:\n\n```python\nfrom typing import Dict, Any, Optional, Tuple, Union, List\n\nclass GoogleSheetsNode(Node):\n    def __init__(self, \n                 id: Optional[str] = None,\n                 name: str = \"Google Sheets\",\n                 position: Tuple[int, int] = (0, 0),\n                 operation: str = \"appendOrUpdate\",\n                 document_id: Dict[str, Any] = None,\n                 sheet_name: Dict[str, Any] = None,\n                 columns: Dict[str, Any] = None,\n                 options: Dict[str, Any] = None,\n                 credential_id: str = None,\n                 credential_name: str = None):\n        \n        params = {\n            \"operation\": operation,\n            \"options\": options or {}\n        }\n        \n        # Add document ID if provided\n        if document_id:\n            params[\"documentId\"] = document_id\n        \n        # Add sheet name if provided\n        if sheet_name:\n            params[\"sheetName\"] = sheet_name\n        \n        # Add columns if provided\n        if columns:\n            params[\"columns\"] = columns\n        \n        # Set up credentials\n        credentials = {}\n        if credential_id and credential_name:\n            credentials[\"googleSheetsOAuth2Api\"] = {\n                \"id\": credential_id,\n                \"name\": credential_name\n            }\n        \n        super().__init__(\n            id=id,\n            name=name,\n            type=\"n8n-nodes-base.googleSheets\",\n            typeVersion=4.7,  # Use the version from the PRD\n            position=position,\n            params=params,\n            credentials=credentials\n        )\n    \n    @classmethod\n    def append_or_update(cls,\n                        id: Optional[str] = None,\n                        name: str = \"Append or update row in sheet\",\n                        position: Tuple[int, int] = (0, 0),\n                        document_id: Dict[str, Any] = None,\n                        sheet_name: Dict[str, Any] = None,\n                        columns: Dict[str, Any] = None,\n                        matching_columns: List[str] = None,\n                        options: Dict[str, Any] = None,\n                        credential_id: str = None,\n                        credential_name: str = None) -> 'GoogleSheetsNode':\n        \"\"\"Factory method to create a Google Sheets node for append or update operation.\"\"\"\n        \n        # Set up columns configuration\n        columns_config = columns or {}\n        if not isinstance(columns_config, dict):\n            columns_config = {}\n        \n        if \"mappingMode\" not in columns_config:\n            columns_config[\"mappingMode\"] = \"defineBelow\"\n        \n        if matching_columns and \"matchingColumns\" not in columns_config:\n            columns_config[\"matchingColumns\"] = matching_columns\n        \n        return cls(\n            id=id,\n            name=name,\n            position=position,\n            operation=\"appendOrUpdate\",\n            document_id=document_id,\n            sheet_name=sheet_name,\n            columns=columns_config,\n            options=options,\n            credential_id=credential_id,\n            credential_name=credential_name\n        )\n```\n\nThis class should provide a simplified interface for creating a Google Sheets node with appropriate defaults and configuration options. The implementation should be based on the provided n8n node JSON file for the Google Sheets node. The class includes a factory method for the specific \"appendOrUpdate\" operation mentioned in the PRD.",
+        "testStrategy": "Test creating a GoogleSheetsNode with default parameters. Test creating a GoogleSheetsNode with custom parameters for different operations, document IDs, sheet names, and column configurations. Test the append_or_update factory method with various parameters. Verify that the to_dict() method produces a valid n8n Google Sheets node JSON that matches the expected format from the provided n8n node files.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement GoogleSheetsNode constructor",
+            "description": "Create the constructor for the GoogleSheetsNode class with appropriate parameters and default values",
+            "dependencies": [],
+            "details": "Implement the __init__ method for the GoogleSheetsNode class that accepts parameters for node configuration including operation type, document ID, sheet name, columns, and credentials. Ensure proper parameter validation and default values. The constructor should properly format these parameters into the structure expected by the n8n Google Sheets node.",
+            "status": "pending",
+            "testStrategy": "Test initialization with default parameters. Test with various combinations of parameters. Verify that the resulting node configuration matches the expected n8n Google Sheets node format."
+          },
+          {
+            "id": 2,
+            "title": "Implement append_or_update factory method",
+            "description": "Create a factory method for the common 'appendOrUpdate' operation with appropriate parameters",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Implement the append_or_update class method that creates a GoogleSheetsNode configured specifically for the appendOrUpdate operation. This method should handle document ID, sheet name, columns configuration, and matching columns for update operations. It should provide sensible defaults and proper parameter validation.",
+            "status": "pending",
+            "testStrategy": "Test the factory method with various parameter combinations. Verify that the resulting node is properly configured for the appendOrUpdate operation. Test with and without matching columns. Verify that the node configuration matches the expected n8n format."
+          },
+          {
+            "id": 3,
+            "title": "Implement additional operation factory methods",
+            "description": "Create factory methods for other common Google Sheets operations (read, append, update, delete)",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Implement additional factory methods for common Google Sheets operations: read_data, append_data, update_data, and delete_data. Each method should accept appropriate parameters for its specific operation and create a properly configured GoogleSheetsNode instance. Include proper parameter validation and sensible defaults.",
+            "status": "pending",
+            "testStrategy": "Test each factory method with various parameter combinations. Verify that each method creates a node with the correct operation type and configuration. Test with edge cases like empty parameters and verify proper handling."
+          },
+          {
+            "id": 4,
+            "title": "Implement credential configuration methods",
+            "description": "Create methods to configure OAuth2 credentials for Google Sheets access",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Implement methods to configure Google Sheets OAuth2 credentials. This should include a method to set credentials by ID and name, and potentially a method to create a node with credentials from environment variables or configuration files. Ensure proper validation of credential parameters.",
+            "status": "pending",
+            "testStrategy": "Test setting credentials with various parameter combinations. Verify that credentials are properly formatted in the node configuration. Test with invalid credentials and verify proper error handling."
+          },
+          {
+            "id": 5,
+            "title": "Write comprehensive unit tests",
+            "description": "Create unit tests for the GoogleSheetsNode class and all its methods",
+            "dependencies": [
+              "7.1",
+              "7.2",
+              "7.3",
+              "7.4"
+            ],
+            "details": "Create comprehensive unit tests for the GoogleSheetsNode class, including tests for the constructor, all factory methods, and credential configuration. Tests should cover normal usage patterns, edge cases, and error conditions. Include tests that verify the node configuration matches the expected n8n format for various operations.",
+            "status": "pending",
+            "testStrategy": "Use pytest to create a test suite. Include tests for all public methods with various parameter combinations. Test with valid and invalid parameters. Use fixtures to create test data. Verify that the node configuration matches the expected n8n format for each operation type."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Implement JSON Workflow Export",
+        "description": "Enhance the Workflow class to export workflows to valid n8n workflow.json files.",
+        "details": "Extend the Workflow class with improved export functionality:\n\n```python\nimport json\nimport os\nfrom typing import Dict, Any, Optional\n\ndef export(self, file_path: str, pretty: bool = True) -> None:\n    \"\"\"Export the workflow to a JSON file compatible with n8n.\n    \n    Args:\n        file_path: Path where the workflow JSON will be saved\n        pretty: Whether to format the JSON with indentation for readability\n    \"\"\"\n    # Create directory if it doesn't exist\n    os.makedirs(os.path.dirname(os.path.abspath(file_path)), exist_ok=True)\n    \n    # Convert workflow to dictionary\n    workflow_dict = self.to_dict()\n    \n    # Write to file\n    with open(file_path, 'w') as f:\n        if pretty:\n            json.dump(workflow_dict, f, indent=2)\n        else:\n            json.dump(workflow_dict, f)\n    \n    print(f\"Workflow exported to {file_path}\")\n\ndef to_dict(self) -> Dict[str, Any]:\n    \"\"\"Convert the workflow to a dictionary compatible with n8n's JSON format.\"\"\"\n    # Convert nodes to dictionaries\n    nodes_dict = [node.to_dict() for node in self.nodes]\n    \n    # Format connections according to n8n's expected structure\n    connections_dict = {}\n    for source_id, outputs in self.connections.items():\n        connections_dict[source_id] = {}\n        for output_name, targets in outputs.items():\n            connections_dict[source_id][output_name] = targets\n    \n    # Build the complete workflow dictionary\n    return {\n        \"id\": self.id,\n        \"name\": self.name,\n        \"nodes\": nodes_dict,\n        \"connections\": connections_dict,\n        \"active\": self.active,\n        \"settings\": self.settings,\n        \"tags\": self.tags,\n        \"createdAt\": self.created_at,\n        \"updatedAt\": self.updated_at\n    }\n```\n\nThis implementation should ensure that the exported JSON file is fully compatible with n8n's workflow import format. It should handle all the necessary workflow properties, including nodes, connections, settings, and metadata.",
+        "testStrategy": "Test exporting workflows with different configurations of nodes and connections. Verify that the exported JSON files can be successfully imported into n8n. Test with the example workflow from the PRD to ensure compatibility. Test error handling for invalid file paths and permissions.",
+        "priority": "high",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Enhance to_dict() method for complete n8n compatibility",
+            "description": "Update the to_dict() method to ensure all required n8n workflow properties are included and properly formatted.",
+            "dependencies": [],
+            "details": "Modify the to_dict() method to include all necessary n8n workflow properties such as version, pinData, staticData, and other metadata. Ensure the format matches exactly what n8n expects for successful import. Review the n8n workflow schema to identify any missing properties and add them to the method.",
+            "status": "pending",
+            "testStrategy": "Compare exported JSON with actual n8n workflow files to ensure all properties are present and correctly formatted. Test with workflows of varying complexity to ensure compatibility."
+          },
+          {
+            "id": 2,
+            "title": "Implement proper connection formatting",
+            "description": "Refine the connection dictionary creation to match n8n's expected format exactly.",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "The current implementation of connections_dict may not match n8n's expected format exactly. Research and implement the precise structure required by n8n, including proper handling of multiple outputs and input mappings. Ensure the connection format includes all necessary metadata such as index values and parameters.",
+            "status": "pending",
+            "testStrategy": "Test with workflows containing complex connection patterns, including multiple outputs from a single node and connections to multiple inputs. Verify the exported connections can be properly imported into n8n."
+          },
+          {
+            "id": 3,
+            "title": "Add error handling for export process",
+            "description": "Implement robust error handling in the export method to gracefully handle file system issues and permission errors.",
+            "dependencies": [],
+            "details": "Enhance the export method with try-except blocks to catch and handle potential errors such as permission issues, disk space problems, or invalid file paths. Provide meaningful error messages and consider implementing a logging mechanism. Ensure the method fails gracefully without corrupting existing files.",
+            "status": "pending",
+            "testStrategy": "Test export with invalid file paths, read-only directories, and during low disk space conditions. Verify appropriate exceptions are raised with helpful error messages."
+          },
+          {
+            "id": 4,
+            "title": "Implement export validation",
+            "description": "Add pre-export validation to ensure the workflow is valid before attempting to export.",
+            "dependencies": [
+              "8.1",
+              "8.2"
+            ],
+            "details": "Add an optional validation step to the export method that checks if the workflow is valid before exporting. This should verify that all required fields are present, node IDs are unique, connections reference valid nodes, and the overall structure is compatible with n8n. Add a parameter to the export method (validate=True by default) to control whether validation is performed.",
+            "status": "pending",
+            "testStrategy": "Test exporting valid and invalid workflows with validation enabled and disabled. Verify that appropriate exceptions are raised for invalid workflows when validation is enabled."
+          },
+          {
+            "id": 5,
+            "title": "Add export format versioning support",
+            "description": "Implement support for different n8n workflow format versions to ensure forward and backward compatibility.",
+            "dependencies": [
+              "8.1",
+              "8.2",
+              "8.4"
+            ],
+            "details": "Research n8n workflow format versioning and implement support for specifying the target n8n version during export. Add a version parameter to the export method with a default value matching the latest supported n8n version. Implement version-specific formatting logic to ensure compatibility with different n8n versions.",
+            "status": "pending",
+            "testStrategy": "Test exporting workflows targeting different n8n versions and verify they can be successfully imported into the corresponding n8n instances. Test with both older and newer n8n versions to ensure backward and forward compatibility."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "Implement Workflow Validation",
+        "description": "Add validation to the Workflow class to ensure that workflows are valid before export.",
+        "details": "Implement validation methods for the Workflow class to ensure that workflows are valid before export:\n\n```python\ndef validate(self) -> List[str]:\n    \"\"\"Validate the workflow and return a list of validation errors.\n    \n    Returns:\n        A list of validation error messages. Empty list if valid.\n    \"\"\"\n    errors = []\n    \n    # Check if workflow has a name\n    if not self.name:\n        errors.append(\"Workflow must have a name\")\n    \n    # Check if workflow has at least one node\n    if not self.nodes:\n        errors.append(\"Workflow must have at least one node\")\n    \n    # Check for duplicate node IDs\n    node_ids = [node.id for node in self.nodes]\n    if len(node_ids) != len(set(node_ids)):\n        errors.append(\"Workflow contains duplicate node IDs\")\n    \n    # Check connections\n    for source_id, outputs in self.connections.items():\n        # Check if source node exists\n        if source_id not in node_ids:\n            errors.append(f\"Connection references non-existent source node: {source_id}\")\n        \n        for output_name, targets in outputs.items():\n            for target in targets:\n                # Check if target node exists\n                if target[\"node\"] not in node_ids:\n                    errors.append(f\"Connection references non-existent target node: {target['node']}\")\n    \n    return errors\n\ndef is_valid(self) -> bool:\n    \"\"\"Check if the workflow is valid.\n    \n    Returns:\n        True if the workflow is valid, False otherwise.\n    \"\"\"\n    return len(self.validate()) == 0\n\ndef export(self, file_path: str, pretty: bool = True, validate: bool = True) -> None:\n    \"\"\"Export the workflow to a JSON file compatible with n8n.\n    \n    Args:\n        file_path: Path where the workflow JSON will be saved\n        pretty: Whether to format the JSON with indentation for readability\n        validate: Whether to validate the workflow before export\n    \n    Raises:\n        ValueError: If the workflow is invalid and validate=True\n    \"\"\"\n    if validate:\n        errors = self.validate()\n        if errors:\n            raise ValueError(f\"Cannot export invalid workflow: {', '.join(errors)}\")\n    \n    # Existing export code...\n```\n\nThis implementation should ensure that workflows are valid before export, checking for common issues like missing nodes, duplicate IDs, and invalid connections.",
+        "testStrategy": "Test validation with valid and invalid workflows. Test with missing nodes, duplicate node IDs, and invalid connections. Verify that the validate() method returns appropriate error messages. Test that the export() method raises ValueError for invalid workflows when validate=True.",
+        "priority": "medium",
+        "dependencies": [
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement basic workflow validation checks",
+            "description": "Implement the core validation checks for workflow name, node existence, and duplicate node IDs",
+            "dependencies": [],
+            "details": "Implement the first part of the validate() method that checks:\n1. If the workflow has a name\n2. If the workflow has at least one node\n3. If there are any duplicate node IDs\nEnsure these checks add appropriate error messages to the errors list.",
+            "status": "pending",
+            "testStrategy": "Create test cases for workflows with missing names, no nodes, and duplicate node IDs. Verify that the validate() method returns the correct error messages for each case."
+          },
+          {
+            "id": 2,
+            "title": "Implement connection validation checks",
+            "description": "Add validation for workflow connections to ensure they reference existing nodes",
+            "dependencies": [
+              "9.1"
+            ],
+            "details": "Implement the connection validation part of the validate() method that checks:\n1. If source nodes in connections exist in the workflow\n2. If target nodes in connections exist in the workflow\nEnsure these checks add appropriate error messages to the errors list with specific details about which connections are invalid.",
+            "status": "pending",
+            "testStrategy": "Create test cases with connections referencing non-existent source and target nodes. Verify that the validate() method correctly identifies and reports these invalid connections."
+          },
+          {
+            "id": 3,
+            "title": "Implement is_valid() method",
+            "description": "Implement the is_valid() method that uses validate() to determine if a workflow is valid",
+            "dependencies": [
+              "9.1",
+              "9.2"
+            ],
+            "details": "Implement the is_valid() method that calls validate() and returns True if the list of validation errors is empty, False otherwise. This provides a simple boolean check for workflow validity.",
+            "status": "pending",
+            "testStrategy": "Test the is_valid() method with both valid and invalid workflows to ensure it returns the correct boolean value in each case."
+          },
+          {
+            "id": 4,
+            "title": "Update export() method with validation",
+            "description": "Modify the export() method to validate workflows before exporting and raise appropriate errors",
+            "dependencies": [
+              "9.3"
+            ],
+            "details": "Update the export() method to:\n1. Check the validate parameter\n2. If validate=True, call the validate() method\n3. If there are validation errors, raise a ValueError with a message containing all error messages\n4. Only proceed with export if there are no validation errors or if validate=False",
+            "status": "pending",
+            "testStrategy": "Test exporting both valid and invalid workflows with validate=True and validate=False. Verify that ValueError is raised for invalid workflows when validate=True, and that export proceeds without validation when validate=False."
+          },
+          {
+            "id": 5,
+            "title": "Add advanced validation checks",
+            "description": "Implement additional validation checks for workflow integrity and completeness",
+            "dependencies": [
+              "9.2"
+            ],
+            "details": "Add additional validation checks to the validate() method:\n1. Check that all nodes have required fields (e.g., type, parameters)\n2. Verify that node positions are valid (not null)\n3. Check that connections use valid output names for source nodes\n4. Verify that the workflow doesn't contain circular dependencies\nThese additional checks will ensure more robust workflow validation.",
+            "status": "pending",
+            "testStrategy": "Create test cases for each new validation check, including workflows with missing node fields, invalid positions, invalid output names, and circular dependencies. Verify that the validate() method correctly identifies and reports these issues."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Implement Sample Workflow Creation",
+        "description": "Create a sample implementation that reproduces the example workflow from the PRD.",
+        "details": "Implement a sample script (main.py) that creates the example workflow from the PRD:\n\n```python\nfrom sdk.sdk import Workflow, Node, ManualTriggerNode, HTTPRequestNode, GoogleSheetsNode\n\ndef create_sample_workflow():\n    # Create a new workflow\n    workflow = Workflow(name=\"Users to Google Sheet\")\n    \n    # Create nodes\n    trigger = ManualTriggerNode(\n        id=\"3effa98f-f88c-4c8d-a2f2-3dbf15ea77bd\",\n        name=\"When clicking 'Execute workflow'\",\n        position=(-288, -16)\n    )\n    \n    http = HTTPRequestNode(\n        id=\"087c2d01-6a20-47c6-9599-6a0136c99183\",\n        name=\"HTTP Request\",\n        position=(-32, -16),\n        url=\"https://jsonplaceholder.typicode.com/users\",\n        method=\"GET\",\n        response_format=\"json\"\n    )\n    \n    sheets = GoogleSheetsNode.append_or_update(\n        id=\"66bf1544-26d7-4f0d-9130-a7714ae1beed\",\n        name=\"Append or update row in sheet\",\n        position=(240, -16),\n        document_id={\n            \"__rl\": True,\n            \"value\": \"193K6ZufOQgQcV-7P4D6jyS8ejNfxIv32yvT2bR5lT2k\",\n            \"mode\": \"list\",\n            \"cachedResultName\": \"Users\",\n            \"cachedResultUrl\": \"https://docs.google.com/spreadsheets/d/193K6ZufOQgQcV-7P4D6jyS8ejNfxIv32yvT2bR5lT2k/edit?usp=drivesdk\"\n        },\n        sheet_name={\n            \"__rl\": True,\n            \"value\": \"gid=0\",\n            \"mode\": \"list\",\n            \"cachedResultName\": \"Sheet1\",\n            \"cachedResultUrl\": \"https://docs.google.com/spreadsheets/d/193K6ZufOQgQcV-7P4D6jyS8ejNfxIv32yvT2bR5lT2k/edit#gid=0\"\n        },\n        columns={\n            \"mappingMode\": \"defineBelow\",\n            \"value\": {\n                \"name\": \"={{ $json.name }}\",\n                \"username\": \"={{ $json.username }}\",\n                \"email\": \"={{ $json.email }}\",\n                \"phone\": \"={{ $json.phone }}\",\n                \"website\": \"={{ $json.website }}\"\n            },\n            \"matchingColumns\": [\n                \"email\"\n            ],\n            \"schema\": [\n                {\"id\": \"name\", \"displayName\": \"name\", \"required\": False, \"defaultMatch\": False, \"display\": True, \"type\": \"string\", \"canBeUsedToMatch\": True},\n                {\"id\": \"username\", \"displayName\": \"username\", \"required\": False, \"defaultMatch\": False, \"display\": True, \"type\": \"string\", \"canBeUsedToMatch\": True},\n                {\"id\": \"email\", \"displayName\": \"email\", \"required\": False, \"defaultMatch\": False, \"display\": True, \"type\": \"string\", \"canBeUsedToMatch\": True, \"removed\": False},\n                {\"id\": \"phone\", \"displayName\": \"phone\", \"required\": False, \"defaultMatch\": False, \"display\": True, \"type\": \"string\", \"canBeUsedToMatch\": True},\n                {\"id\": \"website\", \"displayName\": \"website\", \"required\": False, \"defaultMatch\": False, \"display\": True, \"type\": \"string\", \"canBeUsedToMatch\": True}\n            ],\n            \"attemptToConvertTypes\": False,\n            \"convertFieldsToString\": False\n        },\n        credential_id=\"Heyjvh3DnLP9bR1B\",\n        credential_name=\"Google Sheets account 3\"\n    )\n    \n    # Add nodes to workflow\n    workflow.add_nodes(trigger, http, sheets)\n    \n    # Connect nodes\n    workflow.connect(trigger, http)\n    workflow.connect(http, sheets)\n    \n    return workflow\n\nif __name__ == \"__main__\":\n    # Create the sample workflow\n    workflow = create_sample_workflow()\n    \n    # Export the workflow to a JSON file\n    workflow.export(\"n8n-workflows/workflow.json\")\n    \n    print(\"Sample workflow created and exported to n8n-workflows/workflow.json\")\n```\n\nThis implementation should create a workflow that matches the example from the PRD, using the specialized node classes and the Workflow class.",
+        "testStrategy": "Run the sample script and verify that it produces a workflow.json file that matches the expected format from the PRD. Import the generated workflow into n8n and verify that it works correctly. Test with different node configurations to ensure flexibility.",
+        "priority": "high",
+        "dependencies": [
+          5,
+          6,
+          7,
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Set up project structure and import dependencies",
+            "description": "Create the necessary directory structure and import all required dependencies for the sample workflow implementation.",
+            "dependencies": [],
+            "details": "Create the main.py file in the appropriate location. Ensure all necessary imports are included from the SDK package. Set up the project structure to include the n8n-workflows directory for the exported workflow JSON. Verify that all required node classes (ManualTriggerNode, HTTPRequestNode, GoogleSheetsNode) are properly imported.",
+            "status": "pending",
+            "testStrategy": "Verify that the script runs without import errors. Check that the directory structure is correctly set up with the n8n-workflows folder."
+          },
+          {
+            "id": 2,
+            "title": "Implement the create_sample_workflow function",
+            "description": "Create the function that builds the workflow with all required nodes as specified in the PRD.",
+            "dependencies": [
+              "10.1"
+            ],
+            "details": "Implement the create_sample_workflow function that creates a new Workflow instance with the name 'Users to Google Sheet'. Create all three required nodes (ManualTriggerNode, HTTPRequestNode, and GoogleSheetsNode) with the exact parameters specified in the PRD. Ensure all node IDs, names, positions, and other properties match the PRD example.",
+            "status": "pending",
+            "testStrategy": "Test that the function creates a workflow object with the correct name and nodes. Verify that all node parameters match the specifications in the PRD."
+          },
+          {
+            "id": 3,
+            "title": "Add nodes to workflow and create connections",
+            "description": "Add the created nodes to the workflow and establish the correct connections between them.",
+            "dependencies": [
+              "10.2"
+            ],
+            "details": "Add the trigger, HTTP request, and Google Sheets nodes to the workflow using the add_nodes method. Create connections between the nodes in the correct order: from the trigger node to the HTTP request node, and from the HTTP request node to the Google Sheets node. Ensure the workflow structure matches the example from the PRD.",
+            "status": "pending",
+            "testStrategy": "Verify that all nodes are properly added to the workflow. Check that the connections between nodes are correctly established in the workflow object."
+          },
+          {
+            "id": 4,
+            "title": "Implement workflow export functionality",
+            "description": "Add code to export the created workflow to a JSON file in the n8n-workflows directory.",
+            "dependencies": [
+              "10.3"
+            ],
+            "details": "Implement the main block that creates the sample workflow by calling the create_sample_workflow function. Use the workflow's export method to save the workflow to 'n8n-workflows/workflow.json'. Add a confirmation message that prints when the workflow has been successfully created and exported.",
+            "status": "pending",
+            "testStrategy": "Test that the export functionality correctly generates a workflow.json file in the n8n-workflows directory. Verify that the exported JSON has the correct structure and contains all the workflow information."
+          },
+          {
+            "id": 5,
+            "title": "Test and validate the exported workflow",
+            "description": "Test the implementation by running the script and validating the exported workflow against the PRD specifications.",
+            "dependencies": [
+              "10.4"
+            ],
+            "details": "Run the main.py script to generate the workflow.json file. Compare the generated JSON with the expected format from the PRD. Verify that all node configurations, connections, and workflow properties match the specifications. Make any necessary adjustments to ensure the implementation accurately reproduces the example workflow.",
+            "status": "pending",
+            "testStrategy": "Import the generated workflow.json into an n8n instance to verify it works correctly. Compare the JSON structure with the expected format. Test with different node configurations to ensure flexibility."
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Implement SDK Package Initialization",
+        "description": "Create the __init__.py file for the SDK package to expose the public API.",
+        "details": "Implement the __init__.py file for the SDK package to expose the public API:\n\n```python\n# sdk/__init__.py\n\nfrom .sdk import (\n    Node,\n    Workflow,\n    ManualTriggerNode,\n    HTTPRequestNode,\n    GoogleSheetsNode\n)\n\n__version__ = \"0.1.0\"\n__all__ = [\n    \"Node\",\n    \"Workflow\",\n    \"ManualTriggerNode\",\n    \"HTTPRequestNode\",\n    \"GoogleSheetsNode\"\n]\n```\n\nThis implementation should expose the public API of the SDK package, making it easy for users to import the necessary classes.",
+        "testStrategy": "Test importing the SDK package and its classes from different locations. Verify that the package exposes the expected classes and that they can be used to create workflows.",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create the basic __init__.py file structure",
+            "description": "Set up the initial structure of the __init__.py file with imports and version information",
+            "dependencies": [],
+            "details": "Create the __init__.py file in the sdk package directory with the basic structure including the version number and import statements from the sdk module. Ensure the file follows the provided template with proper imports for Node, Workflow, and the specialized node classes.",
+            "status": "pending",
+            "testStrategy": "Verify that the file is created in the correct location and contains the expected version number and import statements."
+          },
+          {
+            "id": 2,
+            "title": "Define the __all__ list",
+            "description": "Define the __all__ list to explicitly declare the public API of the package",
+            "dependencies": [
+              "11.1"
+            ],
+            "details": "Add the __all__ list to the __init__.py file that includes all the public classes that should be exposed by the SDK: Node, Workflow, ManualTriggerNode, HTTPRequestNode, and GoogleSheetsNode. This ensures that users can easily see what classes are available and import them directly from the package.",
+            "status": "pending",
+            "testStrategy": "Test that the __all__ list contains all the required classes and that it matches the imports defined in the file."
+          },
+          {
+            "id": 3,
+            "title": "Test direct imports from the package",
+            "description": "Verify that classes can be imported directly from the SDK package",
+            "dependencies": [
+              "11.1",
+              "11.2"
+            ],
+            "details": "Create test cases to verify that users can import the exposed classes directly from the SDK package using statements like 'from sdk import Node, Workflow'. Ensure that all the classes listed in __all__ can be imported this way without errors.",
+            "status": "pending",
+            "testStrategy": "Write a test script that imports each class directly from the sdk package and verifies that they can be instantiated correctly."
+          },
+          {
+            "id": 4,
+            "title": "Add docstrings and comments",
+            "description": "Add appropriate docstrings and comments to the __init__.py file",
+            "dependencies": [
+              "11.1",
+              "11.2"
+            ],
+            "details": "Add module-level docstrings to the __init__.py file explaining the purpose of the SDK package and how to use it. Include comments for clarity where needed. The docstring should provide a brief overview of the package functionality and link to more detailed documentation if available.",
+            "status": "pending",
+            "testStrategy": "Review the docstrings for clarity and completeness. Ensure they follow standard Python documentation conventions."
+          },
+          {
+            "id": 5,
+            "title": "Test package initialization in different contexts",
+            "description": "Test importing the SDK package from different locations and contexts",
+            "dependencies": [
+              "11.1",
+              "11.2",
+              "11.3",
+              "11.4"
+            ],
+            "details": "Create comprehensive tests to verify that the SDK package can be imported correctly from different locations and contexts. Test importing individual classes, importing the entire package, and using the imported classes to create workflows. Ensure that the package initialization works as expected in all scenarios.",
+            "status": "pending",
+            "testStrategy": "Create test scripts in different directories that import and use the SDK package. Verify that all imports work correctly and that the imported classes can be used to create and manipulate workflows."
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Create Documentation",
+        "description": "Create comprehensive documentation for the SDK, including installation, usage, and examples.",
+        "details": "Create a comprehensive README.md file that includes:\n\n1. Project overview and purpose\n2. Installation instructions\n3. Basic usage examples\n4. API documentation for each class\n5. Example workflow creation\n6. Troubleshooting and FAQ\n\nThe documentation should be clear, concise, and include code examples for common use cases. It should also include information about the supported n8n nodes and their configuration options.\n\nExample structure:\n\n```markdown\n# n8n Python SDK\n\nA Python SDK for programmatically generating n8n workflows.\n\n## Overview\n\nThis SDK allows you to define n8n workflows using Python code, eliminating the need to manually configure workflows in the n8n GUI. It provides a fluent API for defining nodes, connecting them, and exporting valid workflow.json files that can be imported into n8n.\n\n## Installation\n\nClone this repository and include it in your project:\n\n```bash\ngit clone https://github.com/yourusername/n8n-python-sdk.git\ncd n8n-python-sdk\n```\n\n## Usage\n\n### Basic Example\n\n```python\nfrom sdk import Workflow, ManualTriggerNode, HTTPRequestNode\n\n# Create a workflow\nworkflow = Workflow(name=\"My Workflow\")\n\n# Create nodes\ntrigger = ManualTriggerNode(name=\"Start\")\nhttp = HTTPRequestNode(name=\"Get Data\", url=\"https://api.example.com/data\")\n\n# Add nodes to workflow\nworkflow.add_nodes(trigger, http)\n\n# Connect nodes\nworkflow.connect(trigger, http)\n\n# Export workflow\nworkflow.export(\"my-workflow.json\")\n```\n\n### Supported Nodes\n\n- Manual Trigger Node\n- HTTP Request Node\n- Google Sheets Node\n\n## API Documentation\n\n### Workflow Class\n\n...\n\n### Node Class\n\n...\n\n### ManualTriggerNode Class\n\n...\n\n### HTTPRequestNode Class\n\n...\n\n### GoogleSheetsNode Class\n\n...\n\n## Examples\n\n...\n\n## Troubleshooting\n\n...\n\n## Contributing\n\n...\n\n## License\n\n...\n```",
+        "testStrategy": "Review the documentation for clarity, completeness, and accuracy. Verify that the installation instructions work as expected. Test the code examples to ensure they work correctly. Get feedback from potential users on the documentation's usefulness.",
+        "priority": "medium",
+        "dependencies": [
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Project Overview and Installation Instructions",
+            "description": "Write the introduction, project overview, and installation instructions sections of the README.md",
+            "dependencies": [],
+            "details": "Create the first sections of the documentation including: title, introduction, project overview explaining the purpose and benefits of the SDK, and detailed installation instructions with code examples. Include prerequisites, installation methods (git clone, pip install if applicable), and any configuration needed after installation.",
+            "status": "pending",
+            "testStrategy": "Verify that installation instructions work by following them on a clean environment. Ensure the overview clearly communicates the SDK's purpose and value proposition."
+          },
+          {
+            "id": 2,
+            "title": "Develop Basic Usage Examples and Workflow Creation Guide",
+            "description": "Create comprehensive usage examples and workflow creation documentation with code samples",
+            "dependencies": [
+              "12.1"
+            ],
+            "details": "Write the usage section with multiple code examples showing: basic workflow creation, adding different types of nodes, connecting nodes, and exporting workflows. Include a dedicated section on example workflow creation with step-by-step instructions and explanations of each part of the code. Ensure examples are practical and demonstrate real-world use cases.",
+            "status": "pending",
+            "testStrategy": "Test all code examples to ensure they run without errors. Have team members review examples for clarity and completeness."
+          },
+          {
+            "id": 3,
+            "title": "Document API Reference for All Classes",
+            "description": "Create detailed API documentation for each class in the SDK",
+            "dependencies": [
+              "12.1",
+              "12.2"
+            ],
+            "details": "Document all classes (Workflow, Node, and specific node types) with detailed information about: constructor parameters, methods with their parameters and return values, properties, and usage examples. Include information about inheritance relationships between classes. Format this section with clear headings, parameter tables, and code examples for each class and method.",
+            "status": "pending",
+            "testStrategy": "Verify documentation against actual implementation to ensure accuracy. Check that all public methods and properties are documented."
+          },
+          {
+            "id": 4,
+            "title": "Create Supported Nodes Documentation",
+            "description": "Document all supported n8n nodes with their configuration options",
+            "dependencies": [
+              "12.3"
+            ],
+            "details": "Create a comprehensive section listing all supported n8n nodes with: description of each node's purpose, available configuration options with explanations, required and optional parameters, credential requirements if any, and example usage for each node. Include information about node versions supported and any limitations or special considerations.",
+            "status": "pending",
+            "testStrategy": "Test node documentation against actual implementation to ensure all options are correctly documented. Verify examples for each node type."
+          },
+          {
+            "id": 5,
+            "title": "Develop Troubleshooting and Additional Sections",
+            "description": "Create troubleshooting guide, FAQ, contributing guidelines, and finalize documentation",
+            "dependencies": [
+              "12.1",
+              "12.2",
+              "12.3",
+              "12.4"
+            ],
+            "details": "Complete the documentation with: troubleshooting section covering common issues and solutions, FAQ section addressing anticipated questions, contributing guidelines for potential contributors, license information, and any additional sections like advanced usage tips. Review and finalize the entire README.md for consistency, formatting, and completeness.",
+            "status": "pending",
+            "testStrategy": "Review the complete documentation for clarity, accuracy, and completeness. Get feedback from potential users on the documentation's usefulness. Verify all links work and formatting is consistent."
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "title": "Implement Error Handling and Logging",
+        "description": "Add comprehensive error handling and logging to the SDK.",
+        "details": "Implement error handling and logging for the SDK:\n\n1. Create custom exception classes for different types of errors:\n```python\nclass SDKError(Exception):\n    \"\"\"Base exception for all SDK errors.\"\"\"\n    pass\n\nclass WorkflowError(SDKError):\n    \"\"\"Exception raised for errors in the Workflow class.\"\"\"\n    pass\n\nclass NodeError(SDKError):\n    \"\"\"Exception raised for errors in the Node class.\"\"\"\n    pass\n\nclass ExportError(SDKError):\n    \"\"\"Exception raised for errors during workflow export.\"\"\"\n    pass\n```\n\n2. Add logging to key methods:\n```python\nimport logging\n\n# Configure logging\nlogger = logging.getLogger(\"n8n_sdk\")\n\ndef add_node(self, node: Node) -> None:\n    \"\"\"Add a single node to the workflow.\"\"\"\n    if not isinstance(node, Node):\n        raise NodeError(f\"Expected Node instance, got {type(node).__name__}\")\n    \n    logger.debug(f\"Adding node {node.name} ({node.id}) to workflow {self.name}\")\n    self.nodes.append(node)\n\ndef connect(self, source_node: Node, target_node: Node, \n            source_output: str = \"main\", target_input: str = \"main\") -> None:\n    \"\"\"Create a connection between two nodes.\"\"\"\n    if source_node not in self.nodes:\n        raise WorkflowError(f\"Source node {source_node.name} ({source_node.id}) not in workflow\")\n    \n    if target_node not in self.nodes:\n        raise WorkflowError(f\"Target node {target_node.name} ({target_node.id}) not in workflow\")\n    \n    logger.debug(f\"Connecting {source_node.name} to {target_node.name} in workflow {self.name}\")\n    \n    # Initialize connection structure if needed\n    if source_node.id not in self.connections:\n        self.connections[source_node.id] = {}\n    \n    if source_output not in self.connections[source_node.id]:\n        self.connections[source_node.id][source_output] = []\n    \n    # Add the connection\n    self.connections[source_node.id][source_output].append({\n        \"node\": target_node.id,\n        \"type\": target_input\n    })\n```\n\n3. Add a logging configuration function:\n```python\ndef configure_logging(level=logging.INFO):\n    \"\"\"Configure logging for the SDK.\n    \n    Args:\n        level: The logging level to use (default: logging.INFO)\n    \"\"\"\n    logger = logging.getLogger(\"n8n_sdk\")\n    logger.setLevel(level)\n    \n    # Create console handler\n    handler = logging.StreamHandler()\n    handler.setLevel(level)\n    \n    # Create formatter\n    formatter = logging.Formatter(\"%(asctime)s - %(name)s - %(levelname)s - %(message)s\")\n    handler.setFormatter(formatter)\n    \n    # Add handler to logger\n    logger.addHandler(handler)\n    \n    return logger\n```\n\nThis implementation should provide comprehensive error handling and logging for the SDK, making it easier to debug issues and understand what's happening during workflow creation and export.",
+        "testStrategy": "Test error handling by intentionally causing errors and verifying that the appropriate exceptions are raised with helpful error messages. Test logging by configuring different logging levels and verifying that the expected log messages are produced. Test the configure_logging function to ensure it correctly configures the logger.",
+        "priority": "medium",
+        "dependencies": [
+          4,
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Custom Exception Classes",
+            "description": "Create a hierarchy of custom exception classes for different types of errors in the SDK.",
+            "dependencies": [],
+            "details": "Implement the base SDKError class and derived exception classes (WorkflowError, NodeError, ExportError) as specified in the requirements. Add appropriate docstrings and ensure each exception class can accept custom error messages. Include additional exception types if needed for other components of the SDK.",
+            "status": "pending",
+            "testStrategy": "Write unit tests that verify each exception type can be raised correctly with custom messages. Test that exceptions properly inherit from their parent classes. Verify exception handling in try/except blocks."
+          },
+          {
+            "id": 2,
+            "title": "Add Logging to Core SDK Methods",
+            "description": "Integrate logging statements into key methods of the SDK classes.",
+            "dependencies": [
+              "13.1"
+            ],
+            "details": "Add appropriate logging calls to important methods in the Workflow and Node classes, including initialization, node addition, connection creation, and export functionality. Use different log levels (debug, info, warning, error) based on the significance of the event. Ensure log messages are descriptive and include relevant context information.",
+            "status": "pending",
+            "testStrategy": "Test logging by capturing log output and verifying that the expected messages are generated at the appropriate log levels. Use a mock logger to verify that logging calls are made with the correct parameters."
+          },
+          {
+            "id": 3,
+            "title": "Implement Logging Configuration Function",
+            "description": "Create a function to configure logging for the SDK with customizable options.",
+            "dependencies": [
+              "13.2"
+            ],
+            "details": "Implement the configure_logging function that allows users to set the logging level, format, and output destination. Support both console and file logging. Include options for log rotation and maximum log file size. Ensure the function returns a configured logger instance.",
+            "status": "pending",
+            "testStrategy": "Test the configure_logging function with different parameters to verify that it correctly configures the logger. Test with different logging levels, formats, and output destinations."
+          },
+          {
+            "id": 4,
+            "title": "Add Error Handling to Public API Methods",
+            "description": "Enhance all public API methods with comprehensive error handling.",
+            "dependencies": [
+              "13.1",
+              "13.2"
+            ],
+            "details": "Review all public methods in the SDK and add appropriate error handling using try/except blocks. Catch specific exceptions and re-raise them as appropriate SDK exceptions with descriptive error messages. Include parameter validation at the beginning of methods to catch invalid inputs early. Log errors with appropriate context information.",
+            "status": "pending",
+            "testStrategy": "Test error handling by intentionally causing errors (invalid inputs, missing resources, etc.) and verifying that the appropriate exceptions are raised with helpful error messages. Verify that errors are properly logged."
+          },
+          {
+            "id": 5,
+            "title": "Create Documentation and Usage Examples",
+            "description": "Document the error handling and logging features with clear examples.",
+            "dependencies": [
+              "13.1",
+              "13.2",
+              "13.3",
+              "13.4"
+            ],
+            "details": "Create comprehensive documentation for the error handling and logging features. Include examples of how to configure logging, how to handle different types of exceptions, and best practices for error handling. Add docstrings to all new classes and methods. Create a dedicated section in the README or documentation explaining these features.",
+            "status": "pending",
+            "testStrategy": "Review documentation for clarity and completeness. Verify that all examples work as expected by executing them in a test environment. Ensure docstrings follow a consistent format and provide useful information."
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "title": "Implement Workflow Import",
+        "description": "Add functionality to import existing n8n workflows from JSON files.",
+        "details": "Implement functionality to import existing n8n workflows from JSON files:\n\n```python\n@classmethod\ndef from_dict(cls, data: Dict[str, Any]) -> 'Workflow':\n    \"\"\"Create a Workflow instance from a dictionary.\n    \n    Args:\n        data: A dictionary representing an n8n workflow\n    \n    Returns:\n        A new Workflow instance\n    \"\"\"\n    # Create a new workflow\n    workflow = cls(\n        name=data.get(\"name\", \"Imported Workflow\"),\n        id=data.get(\"id\")\n    )\n    \n    # Set workflow properties\n    workflow.active = data.get(\"active\", True)\n    workflow.settings = data.get(\"settings\", {})\n    workflow.tags = data.get(\"tags\", [])\n    workflow.created_at = data.get(\"createdAt\", workflow.created_at)\n    workflow.updated_at = data.get(\"updatedAt\", workflow.updated_at)\n    \n    # Create nodes\n    nodes_dict = {}\n    for node_data in data.get(\"nodes\", []):\n        node = Node.from_dict(node_data)\n        workflow.add_node(node)\n        nodes_dict[node.id] = node\n    \n    # Create connections\n    for source_id, outputs in data.get(\"connections\", {}).items():\n        if source_id not in nodes_dict:\n            continue\n        \n        source_node = nodes_dict[source_id]\n        \n        for output_name, targets in outputs.items():\n            for target in targets:\n                target_id = target.get(\"node\")\n                if target_id not in nodes_dict:\n                    continue\n                \n                target_node = nodes_dict[target_id]\n                target_input = target.get(\"type\", \"main\")\n                \n                workflow.connect(source_node, target_node, output_name, target_input)\n    \n    return workflow\n\n@classmethod\ndef from_json(cls, file_path: str) -> 'Workflow':\n    \"\"\"Create a Workflow instance from a JSON file.\n    \n    Args:\n        file_path: Path to a JSON file containing an n8n workflow\n    \n    Returns:\n        A new Workflow instance\n    \"\"\"\n    with open(file_path, 'r') as f:\n        data = json.load(f)\n    \n    return cls.from_dict(data)\n```\n\nThis implementation should allow users to import existing n8n workflows from JSON files, making it easier to work with workflows that were created in the n8n GUI.",
+        "testStrategy": "Test importing workflows from JSON files with different structures. Test with the example workflow from the PRD. Verify that the imported workflow matches the original. Test error handling for invalid JSON files and missing required properties.",
+        "priority": "low",
+        "dependencies": [
+          4,
+          8
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement from_dict method for Workflow class",
+            "description": "Create the from_dict class method that converts a dictionary representation of an n8n workflow into a Workflow instance",
+            "dependencies": [],
+            "details": "Implement the from_dict method that handles creating a new Workflow instance from a dictionary, setting basic properties like name, ID, active status, settings, and tags. This method should properly parse timestamps for created_at and updated_at fields.",
+            "status": "pending",
+            "testStrategy": "Test with various workflow dictionaries including minimal and complete examples. Verify that all workflow properties are correctly set. Test with missing optional fields to ensure defaults are applied correctly."
+          },
+          {
+            "id": 2,
+            "title": "Implement node creation from workflow dictionary",
+            "description": "Add functionality to create Node instances from the nodes array in the workflow dictionary",
+            "dependencies": [
+              "14.1"
+            ],
+            "details": "Extend the from_dict method to iterate through the nodes array in the workflow dictionary, create Node instances using Node.from_dict(), and add them to the workflow. Maintain a dictionary mapping node IDs to Node instances for connection creation.",
+            "status": "pending",
+            "testStrategy": "Test with workflows containing different numbers of nodes. Verify that all nodes are correctly created with their properties. Test with various node types to ensure compatibility."
+          },
+          {
+            "id": 3,
+            "title": "Implement connection creation from workflow dictionary",
+            "description": "Add functionality to create connections between nodes based on the connections object in the workflow dictionary",
+            "dependencies": [
+              "14.2"
+            ],
+            "details": "Extend the from_dict method to process the connections object, creating connections between nodes using the workflow.connect method. Handle edge cases like missing nodes and ensure proper mapping of output and input types.",
+            "status": "pending",
+            "testStrategy": "Test with workflows containing various connection patterns. Test edge cases like connections to non-existent nodes. Verify that complex workflows with multiple connections are correctly reconstructed."
+          },
+          {
+            "id": 4,
+            "title": "Implement from_json method for Workflow class",
+            "description": "Create the from_json class method that loads a workflow from a JSON file",
+            "dependencies": [
+              "14.1",
+              "14.2",
+              "14.3"
+            ],
+            "details": "Implement the from_json method that reads a JSON file, parses it into a dictionary, and then calls from_dict to create a Workflow instance. Include proper error handling for file operations and JSON parsing.",
+            "status": "pending",
+            "testStrategy": "Test with valid JSON files containing workflow definitions. Test with invalid JSON files to verify error handling. Test with files that don't exist to ensure appropriate exceptions are raised."
+          },
+          {
+            "id": 5,
+            "title": "Create integration tests for workflow import functionality",
+            "description": "Develop comprehensive tests that verify the entire workflow import process works correctly",
+            "dependencies": [
+              "14.1",
+              "14.2",
+              "14.3",
+              "14.4"
+            ],
+            "details": "Create integration tests that verify the complete workflow import process. Test importing complex workflows and verify that all nodes, connections, and properties are correctly preserved. Compare the imported workflow with the original to ensure fidelity.",
+            "status": "pending",
+            "testStrategy": "Use sample n8n workflow JSON files for testing. Verify that importing and then exporting a workflow results in equivalent JSON. Test with the example workflow from the PRD to ensure compatibility with the n8n format."
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "title": "Create Unit Tests",
+        "description": "Create comprehensive unit tests for the SDK.",
+        "details": "Implement comprehensive unit tests for the SDK using pytest:\n\n1. Create a tests directory with the following structure:\n```\ntests/\n    __init__.py\n    test_node.py\n    test_workflow.py\n    test_manual_trigger_node.py\n    test_http_request_node.py\n    test_google_sheets_node.py\n    test_import_export.py\n```\n\n2. Implement test_node.py:\n```python\nimport pytest\nfrom sdk import Node\n\ndef test_node_initialization():\n    \"\"\"Test Node initialization with different parameters.\"\"\"\n    # Test with minimal parameters\n    node = Node(name=\"Test Node\", type=\"test-type\")\n    assert node.name == \"Test Node\"\n    assert node.type == \"test-type\"\n    assert node.typeVersion == 1\n    assert node.position == (0, 0)\n    assert node.params == {}\n    assert node.credentials == {}\n    assert node.id is not None\n    \n    # Test with all parameters\n    node = Node(\n        id=\"test-id\",\n        name=\"Test Node\",\n        type=\"test-type\",\n        typeVersion=2,\n        position=(10, 20),\n        params={\"key\": \"value\"},\n        credentials={\"cred\": {\"id\": \"cred-id\", \"name\": \"cred-name\"}}\n    )\n    assert node.id == \"test-id\"\n    assert node.name == \"Test Node\"\n    assert node.type == \"test-type\"\n    assert node.typeVersion == 2\n    assert node.position == (10, 20)\n    assert node.params == {\"key\": \"value\"}\n    assert node.credentials == {\"cred\": {\"id\": \"cred-id\", \"name\": \"cred-name\"}}\n\ndef test_node_to_dict():\n    \"\"\"Test Node.to_dict() method.\"\"\"\n    node = Node(\n        id=\"test-id\",\n        name=\"Test Node\",\n        type=\"test-type\",\n        typeVersion=2,\n        position=(10, 20),\n        params={\"key\": \"value\"},\n        credentials={\"cred\": {\"id\": \"cred-id\", \"name\": \"cred-name\"}}\n    )\n    node_dict = node.to_dict()\n    assert node_dict[\"id\"] == \"test-id\"\n    assert node_dict[\"name\"] == \"Test Node\"\n    assert node_dict[\"type\"] == \"test-type\"\n    assert node_dict[\"typeVersion\"] == 2\n    assert node_dict[\"position\"] == [10, 20]\n    assert node_dict[\"parameters\"] == {\"key\": \"value\"}\n    assert node_dict[\"credentials\"] == {\"cred\": {\"id\": \"cred-id\", \"name\": \"cred-name\"}}\n\ndef test_node_from_dict():\n    \"\"\"Test Node.from_dict() method.\"\"\"\n    node_dict = {\n        \"id\": \"test-id\",\n        \"name\": \"Test Node\",\n        \"type\": \"test-type\",\n        \"typeVersion\": 2,\n        \"position\": [10, 20],\n        \"parameters\": {\"key\": \"value\"},\n        \"credentials\": {\"cred\": {\"id\": \"cred-id\", \"name\": \"cred-name\"}}\n    }\n    node = Node.from_dict(node_dict)\n    assert node.id == \"test-id\"\n    assert node.name == \"Test Node\"\n    assert node.type == \"test-type\"\n    assert node.typeVersion == 2\n    assert node.position == (10, 20)\n    assert node.params == {\"key\": \"value\"}\n    assert node.credentials == {\"cred\": {\"id\": \"cred-id\", \"name\": \"cred-name\"}}\n```\n\n3. Implement similar tests for the other classes.\n\n4. Create a pytest.ini file:\n```ini\n[pytest]\npython_files = test_*.py\npython_classes = Test*\npython_functions = test_*\n```\n\n5. Create a conftest.py file for shared fixtures:\n```python\nimport pytest\nimport os\nimport json\nfrom sdk import Node, Workflow, ManualTriggerNode, HTTPRequestNode, GoogleSheetsNode\n\n@pytest.fixture\ndef sample_workflow():\n    \"\"\"Create a sample workflow for testing.\"\"\"\n    workflow = Workflow(name=\"Test Workflow\")\n    \n    trigger = ManualTriggerNode(name=\"Start\")\n    http = HTTPRequestNode(name=\"Get Data\", url=\"https://api.example.com/data\")\n    \n    workflow.add_nodes(trigger, http)\n    workflow.connect(trigger, http)\n    \n    return workflow\n\n@pytest.fixture\ndef temp_file(tmpdir):\n    \"\"\"Create a temporary file for testing.\"\"\"\n    return os.path.join(tmpdir, \"workflow.json\")\n```\n\nThis implementation should provide comprehensive unit tests for the SDK, ensuring that all classes and methods work as expected.",
+        "testStrategy": "Run the unit tests with pytest and verify that all tests pass. Test with different Python versions to ensure compatibility. Test with different configurations to ensure flexibility. Use code coverage tools to ensure that all code paths are tested.",
+        "priority": "medium",
+        "dependencies": [
+          11,
+          13,
+          14
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement test_workflow.py",
+            "description": "Create unit tests for the Workflow class to verify initialization, node addition, connections, and serialization/deserialization.",
+            "dependencies": [],
+            "details": "Implement test_workflow.py with tests for: workflow initialization with different parameters, adding nodes individually and in batches, creating connections between nodes, the to_dict() method to ensure it produces valid n8n workflow JSON, the from_dict() method to ensure proper deserialization, and the export/import methods by writing to a file and verifying the contents.",
+            "status": "pending",
+            "testStrategy": "Run the tests with pytest and verify all tests pass. Use different workflow configurations to ensure all code paths are tested. Verify that the serialized workflows match the expected n8n format."
+          },
+          {
+            "id": 2,
+            "title": "Implement test_manual_trigger_node.py and test_http_request_node.py",
+            "description": "Create unit tests for the specialized node classes ManualTriggerNode and HTTPRequestNode to verify their initialization and serialization.",
+            "dependencies": [
+              "15.1"
+            ],
+            "details": "Implement test_manual_trigger_node.py and test_http_request_node.py with tests for: node initialization with default parameters, node initialization with custom parameters, the to_dict() method to ensure it produces valid n8n node JSON, and the from_dict() method to ensure proper deserialization. Verify that the specialized node parameters are correctly set and serialized.",
+            "status": "pending",
+            "testStrategy": "Run the tests with pytest and verify all tests pass. Compare the serialized node JSON with examples from actual n8n workflows to ensure compatibility."
+          },
+          {
+            "id": 3,
+            "title": "Implement test_google_sheets_node.py",
+            "description": "Create unit tests for the GoogleSheetsNode class to verify initialization with different operations and parameters.",
+            "dependencies": [
+              "15.2"
+            ],
+            "details": "Implement test_google_sheets_node.py with tests for: node initialization with different operations (read, append, update), setting different parameters for each operation, credential handling, the to_dict() method to ensure it produces valid n8n node JSON, and the from_dict() method to ensure proper deserialization.",
+            "status": "pending",
+            "testStrategy": "Run the tests with pytest and verify all tests pass. Test each supported Google Sheets operation with different parameter combinations to ensure all code paths are tested."
+          },
+          {
+            "id": 4,
+            "title": "Implement test_import_export.py",
+            "description": "Create unit tests for workflow import and export functionality to verify that workflows can be correctly serialized to and deserialized from JSON files.",
+            "dependencies": [
+              "15.1"
+            ],
+            "details": "Implement test_import_export.py with tests for: exporting workflows to JSON files, importing workflows from JSON files, handling different file paths and formats, error handling for invalid files or paths, and round-trip testing (export then import) to ensure data integrity.",
+            "status": "pending",
+            "testStrategy": "Use temporary files and directories for testing. Verify that exported files contain valid JSON that matches the expected n8n workflow format. Test with both valid and invalid input files to ensure proper error handling."
+          },
+          {
+            "id": 5,
+            "title": "Set up test infrastructure and code coverage",
+            "description": "Create the necessary test infrastructure files (conftest.py, pytest.ini) and set up code coverage reporting.",
+            "dependencies": [],
+            "details": "Implement the conftest.py file with shared fixtures as specified in the task description. Create the pytest.ini file with the specified configuration. Set up code coverage reporting using pytest-cov. Create a GitHub Actions workflow or similar CI configuration to automatically run tests and report coverage on code changes.",
+            "status": "pending",
+            "testStrategy": "Verify that all tests can be run with a single pytest command. Check that code coverage reports are generated correctly and show reasonable coverage percentages. Ensure that the CI configuration successfully runs tests on code changes."
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-09-06T11:32:50.017Z",
+      "updated": "2025-09-06T11:32:50.017Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
