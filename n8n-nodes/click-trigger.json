@@ -1,0 +1,27 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        256
+      ],
+      "id": "3effa98f-f88c-4c8d-a2f2-3dbf15ea77bd",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "61d1ceb8b60d551b2bd6cb318774870200f11403fbfe4e124bc9e07f08b20486"
+  }
+}
